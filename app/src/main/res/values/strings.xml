@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">LocaliserMonEnfant_enfant</string>
+    <string name="app_name">Localiser mon enfant</string>
+    <string name="title_activity_login">Se connecter</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Mot de passe</string>
+    <string name="action_sign_in">Se connecter ou s\'enregistrer</string>
+    <string name="action_sign_in_short">Se connecter</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Nom d\'utilisateur non valide</string>
+    <string name="invalid_password">Le mot de passe doit comporter >5 caractères</string>
+    <string name="login_failed">La connexion a échoué</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Media">Média</string>
+    <string name="Contacts">Contacts</string>
+    <string name="Map">Carte</string>
+    <string name="Listen">Écoute</string>
+    <string name="Settings">Paramétres</string>
+    <string name="send">Envoyer</string>
 </resources>
