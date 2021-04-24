@@ -18,4 +18,8 @@
     <string name="Listen">Écoute</string>
     <string name="Settings">Paramétres</string>
     <string name="send">Envoyer</string>
+    <string name="Pictures">Photos</string>
+    <string name="WebHistory">Historique internet</string>
+    <string name="Videos">Vidéos</string>
+    <string name="Documents">Documents</string>
 </resources>

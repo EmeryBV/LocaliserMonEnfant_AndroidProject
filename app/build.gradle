@@ -20,6 +20,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res',
+                        'src/main/res/layouts/Messaging',
+                        'src/main/res/layouts/Map',
+                        'src/main/res/layouts/Contact',
+                        'src/main/res/layouts/Listen',
+                        'src/main/res/layouts/Media',
+                        'src/main/res/layouts/Main_menu',
+                        'src/main/res/layouts/Video',
+                        'src/main/res/layouts/Documents',
+                        'src/main/res/layouts/Picture',
+                        'src/main/res/layouts/WebHistory'
+            }
+        }
+    }
 
 }
 
@@ -37,4 +54,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.sendbird.sdk:sendbird-android-sdk:3.0.160'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
 }

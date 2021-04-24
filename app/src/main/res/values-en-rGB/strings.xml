@@ -17,4 +17,8 @@
     <string name="Contacts">Contacts</string>
     <string name="Settings">Settings</string>
     <string name="send">Send</string>
+    <string name="Pictures">Pictures</string>
+    <string name="WebHistory">Web history</string>
+    <string name="Videos">Videos</string>
+    <string name="Documents">Documents</string>
 </resources>

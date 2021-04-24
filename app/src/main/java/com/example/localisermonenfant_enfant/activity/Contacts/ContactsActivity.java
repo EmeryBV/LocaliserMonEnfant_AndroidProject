@@ -103,7 +103,7 @@ public class ContactsActivity extends AppCompatActivity {
     void loadContact(){
 
         getContactList();
-        setContentView(R.layout.activity_contacts);
+        setContentView(R.layout.activity_contact);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager
