@@ -34,7 +34,7 @@ android {
                         'src/main/res/layouts/Video',
                         'src/main/res/layouts/Documents',
                         'src/main/res/layouts/Picture',
-                        'src/main/res/layouts/WebHistory'
+                        'src/main/res/layouts/WebHistory', 'src\\main\\res', 'src\\main\\res\\2\\CallLog', 'src\\main\\res\\2\\layouts\\CallLog', 'src\\main\\res\\layouts\\CallLogs'
             }
         }
     }

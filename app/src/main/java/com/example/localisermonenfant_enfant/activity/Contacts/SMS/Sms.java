@@ -1,4 +1,4 @@
-package com.example.localisermonenfant_enfant.activity.SMS;
+package com.example.localisermonenfant_enfant.activity.Contacts.SMS;
 
 public class Sms {
         private String id;

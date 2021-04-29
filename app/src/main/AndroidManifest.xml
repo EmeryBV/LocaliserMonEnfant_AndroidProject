@@ -17,13 +17,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Media.Video.VideoPlayActivity"></activity>
+        <activity android:name=".activity.Contacts.CallLog.CallLog"></activity>
+        <activity android:name=".activity.Media.Video.VideoPlayActivity" />
         <activity android:name=".activity.Media.Picture.FullScreenImageActivity" />
         <activity android:name=".activity.Media.Documents.DocumentsActivity" />
         <activity android:name=".activity.Media.WebHistory.WebHistoryActivity" />
         <activity android:name=".activity.Media.Video.VideoListActivity" />
         <activity android:name=".activity.Media.Picture.PictureActivity" />
-        <activity android:name=".activity.SMS.SmsActivity" />
+        <activity android:name=".activity.Contacts.SMS.SmsActivity" />
         <activity android:name=".activity.SettingsActivity" />
         <activity android:name=".activity.Listen.ListenActivity" />
         <activity android:name=".activity.Map.MapActivity" />

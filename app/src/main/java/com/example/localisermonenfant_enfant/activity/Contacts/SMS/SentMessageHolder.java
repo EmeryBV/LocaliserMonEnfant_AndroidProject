@@ -1,6 +1,5 @@
-package com.example.localisermonenfant_enfant.activity.SMS;
+package com.example.localisermonenfant_enfant.activity.Contacts.SMS;
 
-import android.app.Application;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -8,7 +7,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.localisermonenfant_enfant.R;
-import com.sendbird.android.shadow.okhttp3.internal.Util;
 
 public class SentMessageHolder extends RecyclerView.ViewHolder{
     TextView messageText, timeText;

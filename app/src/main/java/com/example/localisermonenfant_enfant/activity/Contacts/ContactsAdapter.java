@@ -1,6 +1,5 @@
 package com.example.localisermonenfant_enfant.activity.Contacts;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.localisermonenfant_enfant.R;
-import com.example.localisermonenfant_enfant.activity.SMS.SmsActivity;
+import com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity;
 
 import java.util.ArrayList;
 

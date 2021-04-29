@@ -1,4 +1,4 @@
-package com.example.localisermonenfant_enfant.activity.SMS;
+package com.example.localisermonenfant_enfant.activity.Contacts.SMS;
 
 import android.Manifest;
 import android.content.ContentResolver;
@@ -12,8 +12,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.util.Log;
-import android.view.View;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 

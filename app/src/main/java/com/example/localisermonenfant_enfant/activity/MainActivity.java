@@ -9,7 +9,7 @@ import com.example.localisermonenfant_enfant.R;
 import com.example.localisermonenfant_enfant.activity.Contacts.ContactsActivity;
 import com.example.localisermonenfant_enfant.activity.Listen.ListenActivity;
 import com.example.localisermonenfant_enfant.activity.Media.MediaActivity;
-import com.example.localisermonenfant_enfant.activity.SMS.SmsActivity;
+import com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity;
 
 public class MainActivity extends AppCompatActivity {
 

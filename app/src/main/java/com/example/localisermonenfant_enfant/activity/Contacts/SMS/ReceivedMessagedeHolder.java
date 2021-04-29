@@ -1,4 +1,4 @@
-package com.example.localisermonenfant_enfant.activity.SMS;
+package com.example.localisermonenfant_enfant.activity.Contacts.SMS;
 
 import android.text.format.DateUtils;
 import android.view.View;
