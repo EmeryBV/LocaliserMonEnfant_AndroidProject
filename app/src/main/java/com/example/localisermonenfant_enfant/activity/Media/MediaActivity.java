@@ -12,8 +12,6 @@ import com.example.localisermonenfant_enfant.activity.Media.Documents.DocumentsA
 import com.example.localisermonenfant_enfant.activity.Media.Picture.PictureActivity;
 
 import com.example.localisermonenfant_enfant.activity.Media.Video.VideoListActivity;
-import com.example.localisermonenfant_enfant.activity.Media.Video.VideoPlayActivity;
-import com.example.localisermonenfant_enfant.activity.Media.WebHistory.WebHistoryActivity;
 
 public class MediaActivity extends AppCompatActivity {
 
@@ -54,8 +52,7 @@ public class MediaActivity extends AppCompatActivity {
         webHistory_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplication(), WebHistoryActivity.class);
-                startActivity(intent);
+                
             }
         });
 

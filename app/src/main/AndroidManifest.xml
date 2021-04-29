@@ -21,7 +21,6 @@
         <activity android:name=".activity.Media.Video.VideoPlayActivity" />
         <activity android:name=".activity.Media.Picture.FullScreenImageActivity" />
         <activity android:name=".activity.Media.Documents.DocumentsActivity" />
-        <activity android:name=".activity.Media.WebHistory.WebHistoryActivity" />
         <activity android:name=".activity.Media.Video.VideoListActivity" />
         <activity android:name=".activity.Media.Picture.PictureActivity" />
         <activity android:name=".activity.Contacts.SMS.SmsActivity" />
