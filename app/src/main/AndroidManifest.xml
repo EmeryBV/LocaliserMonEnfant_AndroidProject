@@ -16,9 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Media.Documents.DocumentsActivity"></activity>
+        <activity android:name=".activity.Media.Video.VideoPlayActivity"></activity>
+        <activity android:name=".activity.Media.Picture.FullScreenImageActivity" />
+        <activity android:name=".activity.Media.Documents.DocumentsActivity" />
         <activity android:name=".activity.Media.WebHistory.WebHistoryActivity" />
-        <activity android:name=".activity.Media.Video.Video" />
+        <activity android:name=".activity.Media.Video.VideoActivity" />
         <activity android:name=".activity.Media.Picture.PictureActivity" />
         <activity android:name=".activity.SMS.SmsActivity" />
         <activity android:name=".activity.SettingsActivity" />

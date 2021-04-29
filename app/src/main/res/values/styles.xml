@@ -13,4 +13,10 @@
         <!-- Color of the title text in the Toolbar -->
         <item name="android:textColorPrimary">@color/colorAccent</item>
     </style>
+
+    <style name="SeekBar" parent="AppTheme">
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/background</item>
+    </style>
+
 </resources>

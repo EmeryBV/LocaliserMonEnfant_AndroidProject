@@ -8,8 +8,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.activity.Media.Documents.DocumentsActivity;
 import com.example.localisermonenfant_enfant.activity.Media.Picture.PictureActivity;
-import com.example.localisermonenfant_enfant.activity.Media.Video.VideoActivity;
+
+import com.example.localisermonenfant_enfant.activity.Media.Video.VideoPlayActivity;
+import com.example.localisermonenfant_enfant.activity.Media.WebHistory.WebHistoryActivity;
 
 public class MediaActivity extends AppCompatActivity {
 
@@ -32,7 +35,7 @@ public class MediaActivity extends AppCompatActivity {
         video_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplication(), VideoActivity.class);
+                Intent intent = new Intent(getApplication(), VideoPlayActivity.class);
                 startActivity(intent);
             }
         });
@@ -41,16 +44,16 @@ public class MediaActivity extends AppCompatActivity {
         document_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplication(), PictureActivity.class);
+                Intent intent = new Intent(getApplication(), DocumentsActivity.class);
                 startActivity(intent);
             }
         });
 
         TextView webHistory_button = findViewById(R.id.btnWebHistory);
-        document_button.setOnClickListener(new View.OnClickListener() {
+        webHistory_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplication(), PictureActivity.class);
+                Intent intent = new Intent(getApplication(), WebHistoryActivity.class);
                 startActivity(intent);
             }
         });
