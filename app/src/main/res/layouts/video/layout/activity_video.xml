@@ -1,47 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:background="@color/colorPrimary">
+    android:layout_height="match_parent"
+    tools:context=".activity.Media.Video.VideoPlayActivity">
 
-    <RelativeLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginTop="1dp"
-        android:background="@color/colorPrimary">
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/ic_play_circle_filled_black_24dp"
-            android:layout_marginLeft="10dp" />
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="25sp"
-            android:layout_marginStart="75dp"
-            android:layout_marginTop="5dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/colorAccent"
-            android:textSize="16sp"
-            android:layout_marginLeft="75dp" />
-
-        <TextView
-            android:id="@+id/duration"
-            android:layout_width="wrap_content"
-            android:layout_height="25sp"
-            android:layout_marginStart="75dp"
-            android:layout_marginTop="30dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/colorAccent"
-            android:textSize="14sp"/>
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="2dp"/>
 
 </RelativeLayout>

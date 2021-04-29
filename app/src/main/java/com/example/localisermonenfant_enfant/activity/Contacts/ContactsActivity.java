@@ -5,20 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
-import android.view.View;
-
+import android.widget.ImageView;
 import com.example.localisermonenfant_enfant.R;
-import com.example.localisermonenfant_enfant.activity.RecyclerItemClickListener;
-import com.example.localisermonenfant_enfant.activity.SMS.SmsActivity;
 
 import java.util.ArrayList;
 
@@ -58,7 +53,7 @@ public class ContactsActivity extends AppCompatActivity {
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
 //                        Log.i(TAG, "Name: " + name);
 //                        Log.i(TAG, "Phone Number: " + phoneNo);
-                        Contacts contactsObject = new Contacts(name,phoneNo);
+                        Contacts contactsObject = new Contacts(name, phoneNo);
 //                        System.out.println(contactsObject.getName());
                         contactsArrayList.add(contactsObject);
 
@@ -67,7 +62,7 @@ public class ContactsActivity extends AppCompatActivity {
                 }
             }
         }
-        if(cur!=null){
+        if (cur != null) {
             cur.close();
         }
     }
@@ -78,9 +73,9 @@ public class ContactsActivity extends AppCompatActivity {
         checkContactPermissions();
 
     }
-    private void checkContactPermissions()
-    {
-        if(ActivityCompat.checkSelfPermission(this,  Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+
+    private void checkContactPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             {
                 Log.i(TAG, "Contacts permission NOT granted");
                 ActivityCompat.requestPermissions(this, new String[]{
@@ -89,47 +84,31 @@ public class ContactsActivity extends AppCompatActivity {
                 return;
             }
         }
-       loadContact();
+        loadContact();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == PERMS_CONTACT_ID){
+        if (requestCode == PERMS_CONTACT_ID) {
             checkContactPermissions();
         }
     }
 
-    void loadContact(){
+    void loadContact() {
 
         getContactList();
         setContentView(R.layout.activity_contact);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        ImageView imagePhoneView = findViewById(R.id.imagePhoneView);
+        ImageView imageMessageView = findViewById(R.id.imageMessageView);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager
                         (this));
-        ContactsAdapter  monAdapter = new ContactsAdapter(contactsArrayList);
+        ContactsAdapter monAdapter = new ContactsAdapter(contactsArrayList);
         recyclerView.setAdapter(monAdapter);
         loadContact = true;
 
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(this, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getApplication(), SmsActivity.class);
-                        intent.putExtra("phoneNumber", contactsArrayList.get(position).getNumber().replaceAll("\\s+",""));
-                        intent.putExtra("name", contactsArrayList.get(position).getName());
-//                        Toast.makeText(getApplicationContext(), "mon message" + contactsArrayList.get(position).getNumber(), Toast.LENGTH_SHORT).show();
-//                        Log.i(TAG, "tel " + contactsArrayList.get(position).getNumber());
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        // do whatever
-                    }
-                })
-        );
     }
 
 }

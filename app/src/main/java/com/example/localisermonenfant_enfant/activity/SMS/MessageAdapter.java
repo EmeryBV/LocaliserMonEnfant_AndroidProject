@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.localisermonenfant_enfant.R;
-import com.example.localisermonenfant_enfant.activity.Contacts.ViewHolderContacts;
 
 import java.util.ArrayList;
 import java.util.Collections;
