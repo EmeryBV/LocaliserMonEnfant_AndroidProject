@@ -100,8 +100,7 @@ public class ContactsActivity extends AppCompatActivity {
         getContactList();
         setContentView(R.layout.activity_contact);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        ImageView imagePhoneView = findViewById(R.id.imagePhoneView);
-        ImageView imageMessageView = findViewById(R.id.imageMessageView);
+
         recyclerView.setLayoutManager(
                 new LinearLayoutManager
                         (this));

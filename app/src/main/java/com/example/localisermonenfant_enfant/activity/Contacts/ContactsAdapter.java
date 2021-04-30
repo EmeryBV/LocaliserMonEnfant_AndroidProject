@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.activity.Contacts.CallLog.CallLogActivity;
 import com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity;
 
 import java.util.ArrayList;
@@ -54,6 +55,17 @@ class ViewHolderContacts extends RecyclerView.ViewHolder{
         tvName =  itemView.findViewById(R.id.tv_name);
         tvNumber=  itemView.findViewById(R.id.tv_number);
         imagePhoneView = itemView.findViewById(R.id.imagePhoneView);
+        imagePhoneView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(itemView.getContext(), CallLogActivity.class);
+                intent.putExtra("phoneNumber", tvNumber.getText().toString().replaceAll("\\s+",""));
+                intent.putExtra("name",tvName.getText().toString());
+
+                itemView.getContext().startActivity(intent);
+            }
+        });
+
         imageMessageView = itemView.findViewById(R.id.imageMessageView);
         imageMessageView.setOnClickListener(new View.OnClickListener() {
             @Override

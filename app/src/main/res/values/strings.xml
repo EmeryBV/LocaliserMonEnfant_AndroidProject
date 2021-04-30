@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Localiser mon enfant</string>
     <string name="title_activity_login">Se connecter</string>
-    <string name="prompt_email">Email</string>
+    <string name="prompt_pseudo">Pseudo</string>
     <string name="prompt_password">Mot de passe</string>
     <string name="action_sign_in">Se connecter ou s\'enregistrer</string>
     <string name="action_sign_in_short">Se connecter</string>
@@ -22,4 +22,16 @@
     <string name="WebHistory">Historique internet</string>
     <string name="Videos">Vidéos</string>
     <string name="Documents">Documents</string>
+    <string name="OutGoing">Sortant</string>
+    <string name="Missed">Raté</string>
+    <string name="Incoming">Entrant</string>
+    <string name="Username">Nom d\'utilisateur</string>
+    <string name="Password">Mot de passe</string>
+    <string name="sign_in">S\'inscrire</string>
+    <string name="Title_Sign_in">"Inscription"</string>
+    <string name="Already_Sign_in"><u>"Déjà inscrit ? Connectez-vous"</u></string>
+    <string name="Title_Log_In">"Connexion"</string>
+    <string name="Not_Sign_in"><u>"Pas encore de compte ? Inscrivez-vous"</u></string>
+    <string name="Pseudo">Pseudo</string>
+
 </resources>

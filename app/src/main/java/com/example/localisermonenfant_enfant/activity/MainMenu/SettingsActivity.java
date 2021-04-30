@@ -1,4 +1,4 @@
-package com.example.localisermonenfant_enfant.activity;
+package com.example.localisermonenfant_enfant.activity.MainMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
 

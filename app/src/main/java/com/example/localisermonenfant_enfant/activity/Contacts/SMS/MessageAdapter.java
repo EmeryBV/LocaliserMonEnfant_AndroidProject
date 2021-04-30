@@ -17,9 +17,9 @@ public class MessageAdapter extends RecyclerView.Adapter{
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
     ArrayList<Sms> messageList;
 
-    public MessageAdapter(ArrayList<Sms> contacts) {
-        Collections.reverse(contacts);
-        this.messageList =contacts;
+    public MessageAdapter(ArrayList<Sms> message) {
+        Collections.reverse(message);
+        this.messageList =message;
     }
 
     @Override

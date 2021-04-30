@@ -16,7 +16,7 @@
 
     <style name="SeekBar" parent="AppTheme">
         <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="colorControlNormal">@color/background</item>
+        <item name="colorControlNormal">@color/black</item>
     </style>
 
 </resources>

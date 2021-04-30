@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Locate my child</string>
-    <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -21,4 +20,16 @@
     <string name="WebHistory">Web history</string>
     <string name="Videos">Videos</string>
     <string name="Documents">Documents</string>
+    <string name="OutGoing">OutGoing</string>
+    <string name="Missed">Missed</string>
+    <string name="Incoming">Incoming</string>
+    <string name="Username">Username</string>
+    <string name="Password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="Title_Sign_in">Sign in</string>
+    <string name="Already_Sign_in">"Already Sign in ? Log in ! "</string>
+    <string name="Title_Log_In">Log in</string>
+    <string name="Not_Sign_in">"Not sign in ? Click here ! "</string>
+    <string name="Pseudo">Pseudo</string>
+    <string name="prompt_pseudo">Pseudo</string>
 </resources>

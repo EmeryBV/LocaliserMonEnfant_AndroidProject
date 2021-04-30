@@ -83,8 +83,6 @@ public class SmsActivity extends AppCompatActivity {
         MessageAdapter monAdapter = new MessageAdapter(listSms);
         recyclerView.setAdapter(monAdapter);
         recyclerView.scrollToPosition(monAdapter.getItemCount()-1);
-
-
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void getAllSms(Context context) {
@@ -125,23 +123,13 @@ public class SmsActivity extends AppCompatActivity {
                     }
                     c.moveToNext();
                 }
-
             }
-
             c.close();
 
         } else {
             Toast.makeText(this, "No message to show!", Toast.LENGTH_SHORT).show();
         }
 
-
-//            for (int i = 0; i <listSmsInbox.size() ; i++) {
-//            Log.i(TAG, "listSmsInbox n°: " +  i  +" :"+ listSmsInbox.get(i).toString());
-//        }
-
-//        for (int i = 0; i < listSmsSend.size(); i++) {
-//            Log.i(TAG, "listSmsSend n°: " + i + " :" + listSmsSend.get(i).toString());
-//        }
     }
 
     public String getContactbyPhoneNumber(Context c, String phoneNumber) {

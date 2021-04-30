@@ -1,4 +1,4 @@
-package com.example.localisermonenfant_enfant.activity;
+package com.example.localisermonenfant_enfant.activity.MainMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import com.example.localisermonenfant_enfant.activity.Listen.ListenActivity;
 import com.example.localisermonenfant_enfant.activity.Media.MediaActivity;
 import com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainMenu extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

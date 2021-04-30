@@ -10,12 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.localisermonenfant_enfant.R;
-import com.example.localisermonenfant_enfant.activity.MainActivity;
 
 import java.util.List;
 
