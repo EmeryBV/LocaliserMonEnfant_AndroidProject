@@ -37,7 +37,7 @@ android {
                         'src/main/res/layouts/WebHistory',
                         'src/main/res/layouts/CallLogs',
                         'src/main/res/layouts/Login',
-                        'src/main/res/layouts/Authentification', 'src\\main\\res', 'src\\main\\res\\layouts\\WebHistory'
+                        'src/main/res/layouts/Authentification', 'src\\main\\res', 'src\\main\\res\\layouts\\WebHistory', 'src/main/res/layouts/Pictures'
             }
         }
     }
@@ -62,4 +62,6 @@ dependencies {
     implementation 'com.sendbird.sdk:sendbird-android-sdk:3.0.160'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation 'com.android.volley:volley:1.2.0'
 }
