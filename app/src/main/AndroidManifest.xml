@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Authentification.Sign_in"></activity>
+        <activity android:name=".activity.Media.WebHistory.WebHistoryActivity"></activity>
+        <activity android:name=".activity.Authentification.Sign_in" />
         <activity android:name=".activity.Authentification.Log_in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

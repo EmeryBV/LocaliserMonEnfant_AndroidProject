@@ -12,6 +12,7 @@ import com.example.localisermonenfant_enfant.activity.Media.Documents.DocumentsA
 import com.example.localisermonenfant_enfant.activity.Media.Picture.PictureActivity;
 
 import com.example.localisermonenfant_enfant.activity.Media.Video.VideoListActivity;
+import com.example.localisermonenfant_enfant.activity.Media.WebHistory.WebHistoryActivity;
 
 public class MediaActivity extends AppCompatActivity {
 
@@ -39,20 +40,13 @@ public class MediaActivity extends AppCompatActivity {
             }
         });
 
-        TextView document_button = findViewById(R.id.btnDocument);
-        document_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplication(), DocumentsActivity.class);
-                startActivity(intent);
-            }
-        });
 
         TextView webHistory_button = findViewById(R.id.btnWebHistory);
         webHistory_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                Intent intent = new Intent(getApplication(), WebHistoryActivity.class);
+                startActivity(intent);
             }
         });
 
