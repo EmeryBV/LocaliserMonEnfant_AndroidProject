@@ -45,7 +45,7 @@ public class Log_in extends AppCompatActivity {
         log_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    c = new Connection(username.getText().toString(), password.getText().toString(), Connection.ConnectionType.Parent, getApplicationContext(), new Connection.ConnectionCallback() {
+                    c = new Connection(username.getText().toString(), password.getText().toString(), getApplicationContext(), new Connection.ConnectionCallback() {
                     @Override
                     public void Success() {
                         Intent intent = new Intent(getApplication(), MainMenu.class);

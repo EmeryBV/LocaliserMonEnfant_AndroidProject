@@ -45,26 +45,24 @@ public class Connection {
     String sid = null;
     String user = null;
     String pass = null;
+
     ConnectionType connectionType = null;
+    public ConnectionType GetConnectionType() { return connectionType; }
 
     public interface ConnectionCallback {
         public void Success();
         public void Error();
     }
-    public Connection (String user, String pass, ConnectionType connectionType, Context context, final ConnectionCallback connectionCallback) {
+    public Connection (String user, String pass, Context context, final ConnectionCallback connectionCallback) {
         try {
             this.user = user;
             this.pass = pass;
-            this.connectionType = connectionType;
 
             JSONObject params = new JSONObject();
             params.put("type", "Connect");
             params.put("login", user);
             params.put("passwd", pass);
-            if (connectionType == ConnectionType.Child)
-                params.put("role", "child");
-            else
-                params.put("role", "parent");
+
 
             Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
@@ -72,6 +70,11 @@ public class Connection {
 
                     try {
                         sid = response.getString("sid");
+                        if (response.getString("role").equals("child"))
+                            connectionType = ConnectionType.Child;
+                        else
+                            connectionType = ConnectionType.Parent;
+
                         connectionCallback.Success();
                     } catch (JSONException e) {
                         connectionCallback.Error();
