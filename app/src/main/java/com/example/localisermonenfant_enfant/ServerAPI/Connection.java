@@ -66,28 +66,23 @@ public class Connection {
             else
                 params.put("role", "parent");
 
-            Log.e("PARAM #################", params.toString());
-
             Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
                 public void OnSuccess(JSONObject response) {
 
                     try {
                         sid = response.getString("sid");
-                        Log.e("RESPONSE ##############", "sid : " + sid);
+                        connectionCallback.Success();
                     } catch (JSONException e) {
-                        Log.e("RESPONSE ##############", e.getMessage());
+                        connectionCallback.Error();
                     }
                 }
 
                 @Override
                 public void OnError(VolleyError error) {
-                    Log.e("ERROR #################", error.getMessage());
+                    connectionCallback.Error();
                 }
             });
-
-            if (sid == null || sid.equals("")) connectionCallback.Error();
-            else connectionCallback.Success();
         } catch (Exception e) {
             connectionCallback.Error();
         }
@@ -263,6 +258,9 @@ public class Connection {
     }
     private void Post (Context context, String url, final JSONObject params, final VolleyCallback volleyCallback) {
         RequestQueue queue = Volley.newRequestQueue(context);
+
+        Log.e("POST : " + url, params.toString());
+
 
         StringRequest sr = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
