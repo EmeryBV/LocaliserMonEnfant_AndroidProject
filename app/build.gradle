@@ -38,6 +38,7 @@ android {
                         'src/main/res/layouts/CallLogs',
                         'src/main/res/layouts/Login',
                         'src/main/res/layouts/Authentification',
+                        'src/main/res/layouts/ChildChoice',
                         'src/main/res',
                         'src/main/res/layouts/WebHistory', 'src\\main\\res', 'src\\main\\res\\layouts\\ChildChoice'
             }

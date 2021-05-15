@@ -108,7 +108,7 @@ public class Connection {
 
             JSONObject params = new JSONObject();
             params.put("sid", sid);
-            params.put("type", "ChildrenList");
+            params.put("type", "ChildList");
 
             Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
@@ -116,6 +116,7 @@ public class Connection {
                     try {
                         ArrayList<Child> children = new ArrayList<Child>();
                         JSONArray jsonArray = response.getJSONArray("children");
+                        Log.e("Children JSON Array", jsonArray.toString());
                         for (int i = 0; i < jsonArray.length(); i++) {
                             Child c = new Child();
                             JSONObject jo = jsonArray.getJSONObject(i);
