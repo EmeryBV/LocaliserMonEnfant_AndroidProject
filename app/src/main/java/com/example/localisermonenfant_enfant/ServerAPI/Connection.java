@@ -1,6 +1,8 @@
 package com.example.localisermonenfant_enfant.ServerAPI;
 
 import android.content.Context;
+import android.os.Debug;
+import android.util.Log;
 
 import com.android.volley.*;
 import com.android.volley.toolbox.*;
@@ -63,6 +65,8 @@ public class Connection {
             Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
                 public void OnSuccess(JSONObject response) {
+                    Log.i("TAG", response.toString());
+
                     try {
                         sid = response.getString("sid");
                     } catch (JSONException e) {
