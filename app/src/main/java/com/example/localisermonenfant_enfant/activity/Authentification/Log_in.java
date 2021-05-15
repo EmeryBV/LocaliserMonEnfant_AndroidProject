@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,15 +13,16 @@ import android.widget.TextView;
 
 import com.example.localisermonenfant_enfant.R;
 import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 
 public class Log_in extends AppCompatActivity {
-
+    private String TAG = "TAG";
     EditText username;
     EditText password;
     TextView sign_in;
     TextView error;
     Button log_in;
-    static Connection c;
+    public static Connection c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +45,16 @@ public class Log_in extends AppCompatActivity {
         log_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    c = new Connection(username.getText().toString(), password.getText().toString(), Connection.ConnectionType.Parent, getApplication(), new Connection.ConnectionCallback() {
+                    c = new Connection(username.getText().toString(), password.getText().toString(), Connection.ConnectionType.Parent, getApplicationContext(), new Connection.ConnectionCallback() {
                     @Override
                     public void Success() {
-                        Intent intent = new Intent(getApplication(), Sign_in.class);
+                        Intent intent = new Intent(getApplication(), MainMenu.class);
                         startActivity(intent);
                     }
                     @Override
                     public void Error() {
-
+                        Log.i(TAG, username.getText().toString());
+                        Log.i(TAG, password.getText().toString());
                         error.setText(R.string.Error);
                     }
                 });

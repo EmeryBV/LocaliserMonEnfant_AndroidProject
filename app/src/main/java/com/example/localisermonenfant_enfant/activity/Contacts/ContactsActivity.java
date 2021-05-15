@@ -14,6 +14,8 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.ImageView;
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
 
 import java.util.ArrayList;
 
@@ -97,7 +99,9 @@ public class ContactsActivity extends AppCompatActivity {
 
     void loadContact() {
 
+//        if(Log_in.c.)
         getContactList();
+
         setContentView(R.layout.activity_contact);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
