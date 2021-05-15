@@ -12,6 +12,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class Connection {
 
@@ -62,25 +66,29 @@ public class Connection {
             else
                 params.put("role", "parent");
 
+            Log.e("PARAM #################", params.toString());
+
             Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
                 public void OnSuccess(JSONObject response) {
-                    Log.i("TAG", response.toString());
 
                     try {
                         sid = response.getString("sid");
+                        Log.e("RESPONSE ##############", "sid : " + sid);
                     } catch (JSONException e) {
+                        Log.e("RESPONSE ##############", e.getMessage());
                     }
                 }
 
                 @Override
                 public void OnError(VolleyError error) {
+                    Log.e("ERROR #################", error.getMessage());
                 }
             });
 
             if (sid == null || sid.equals("")) connectionCallback.Error();
             else connectionCallback.Success();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             connectionCallback.Error();
         }
     }
@@ -253,23 +261,42 @@ public class Connection {
         public void OnSuccess(JSONObject response);
         public void OnError(VolleyError error);
     }
-    private void Post (Context context, String url, JSONObject params, final VolleyCallback volleyCallback) {
+    private void Post (Context context, String url, final JSONObject params, final VolleyCallback volleyCallback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, params,
-                new Response.Listener<JSONObject>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        volleyCallback.OnSuccess(response);
-                    }
-                }, new Response.ErrorListener() {
+                    public void onResponse(String response) {
+                        Log.e("POST : Success !", response);
+                        try {
+                            volleyCallback.OnSuccess(new JSONObject(response));
+                        } catch (JSONException e) {
 
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.e("POST : Error...", error.getMessage());
                         volleyCallback.OnError(error);
                     }
-                });
-
-        queue.add(jsonObjectRequest);
+                })
+        {
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> p = new HashMap<String, String>();
+                p.put("json",params.toString());
+                return p;
+            }
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        queue.add(sr);
     }
 }
