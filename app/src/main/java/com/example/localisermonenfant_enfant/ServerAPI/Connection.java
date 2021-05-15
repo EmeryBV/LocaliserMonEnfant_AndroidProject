@@ -23,6 +23,7 @@ public class Connection {
     public class Contact {
         int id;
         String name;
+        String num;
     }
 
     public class Child {
@@ -38,14 +39,18 @@ public class Connection {
         boolean sended;
     }
 
-    enum ConnectionType {Child, Parent};
+    public enum ConnectionType {Child, Parent};
 
     String sid = null;
     String user = null;
     String pass = null;
     ConnectionType connectionType = null;
 
-    public Connection (String user, String pass, ConnectionType connectionType, Context context) throws Exception {
+    public interface ConnectionCallback {
+        public void Success();
+        public void Error();
+    }
+    public Connection (String user, String pass, ConnectionType connectionType, Context context, final ConnectionCallback connectionCallback) throws Exception {
         this.user = user;
         this.pass = pass;
         this.connectionType = connectionType;
@@ -62,8 +67,7 @@ public class Connection {
             @Override
             public void OnSuccess(JSONObject response) {
                 try {
-                    if (response.getBoolean("return"))
-                        sid = response.getString("sid");
+                    sid = response.getString("sid");
                 } catch (JSONException e) {
                 }
             }
@@ -73,8 +77,8 @@ public class Connection {
             }
         });
 
-        if (sid == null) throw new Exception("SID not set :(");
-
+        if (sid == null) connectionCallback.Error();
+        else connectionCallback.Success();
     }
 
     public interface GetChildrenCallback {
@@ -140,9 +144,9 @@ public class Connection {
                             JSONObject jo = jsonArray.getJSONObject(i);
                             c.id = jo.getInt("id");
                             c.name = jo.getString("nom");
+                            c.num = jo.getString("numero");
                             contacts.add(c);
                         }
-
                         getContactsCallback.Success(contacts);
                     } catch (Exception e) {
                         getContactsCallback.Error();
@@ -200,6 +204,37 @@ public class Connection {
             });
         } catch (Exception e) {
             getSMSCallback.Error();
+        }
+    }
+
+    public interface SendContactsCallback {
+        void Success();
+        void Error();
+    }
+    public void SendContacts (Context context, ArrayList<Contact> contacts, final SendContactsCallback sendContactsCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            JSONArray array = new JSONArray();
+            for (Contact contact : contacts) {
+                JSONObject c = new JSONObject();
+                c.put("name", contact.name);
+                c.put("num", contact.num);
+                array.put(c);
+            }
+            params.put("Contacts", array);
+            Post(context, IndexUrl, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    sendContactsCallback.Success();
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    sendContactsCallback.Error();
+                }
+            });
+        } catch (JSONException e) {
+            sendContactsCallback.Error();
         }
     }
 
