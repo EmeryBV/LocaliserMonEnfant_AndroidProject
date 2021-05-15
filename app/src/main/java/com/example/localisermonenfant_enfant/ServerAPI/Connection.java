@@ -1,24 +1,19 @@
 package com.example.localisermonenfant_enfant.ServerAPI;
 
 import android.content.Context;
-import android.provider.ContactsContract;
 
 import com.android.volley.*;
 import com.android.volley.toolbox.*;
-import com.example.localisermonenfant_enfant.activity.Contacts.Contacts;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Connection {
 
-    public static String IndexUrl = "https://www.site.com/index.php";
+    public static String CommandURL = "https://www.lme.romimap.com/commands.php";
 
     public class Contact {
         int id;
@@ -64,7 +59,7 @@ public class Connection {
             else
                 params.put("role", "parent");
 
-            Post(context, IndexUrl, params, new VolleyCallback() {
+            Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
                 public void OnSuccess(JSONObject response) {
                     try {
@@ -78,7 +73,7 @@ public class Connection {
                 }
             });
 
-            if (sid == null) connectionCallback.Error();
+            if (sid == null || sid.equals("")) connectionCallback.Error();
             else connectionCallback.Success();
         } catch (JSONException e) {
             connectionCallback.Error();
@@ -96,7 +91,7 @@ public class Connection {
             params.put("sid", sid);
             params.put("type", "ChildrenList");
 
-            Post(context, IndexUrl, params, new VolleyCallback() {
+            Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
                 public void OnSuccess(JSONObject response) {
                     try {
@@ -137,7 +132,7 @@ public class Connection {
             params.put("type", "ChildrenList");
             params.put("ChildId", child.id);
 
-            Post(context, IndexUrl, params, new VolleyCallback() {
+            Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
                 public void OnSuccess(JSONObject response) {
                     try {
@@ -178,7 +173,7 @@ public class Connection {
             params.put("type", "SMS ");
             params.put("ChildId", child.id);
 
-            Post(context, IndexUrl, params, new VolleyCallback() {
+            Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
                 public void OnSuccess(JSONObject response) {
                     try {
@@ -211,34 +206,41 @@ public class Connection {
         }
     }
 
-    public interface SendContactsCallback {
+    public interface SendSMSCallback {
         void Success();
         void Error();
     }
-    public void SendContacts (Context context, ArrayList<Contact> contacts, final SendContactsCallback sendContactsCallback) {
+    public void SendSMS (Context context, ArrayList<SMS> SMSs, final SendSMSCallback sendSMSCallback) {
         try {
             JSONObject params = new JSONObject();
             JSONArray array = new JSONArray();
-            for (Contact contact : contacts) {
+            for (SMS sms : SMSs) {
                 JSONObject c = new JSONObject();
-                c.put("name", contact.name);
-                c.put("num", contact.num);
+                c.put("contact_name", sms.contact.name);
+                c.put("contact_num", sms.contact.num);
+                c.put("id_child", sms.child.id);
+                c.put("date", sms.date);
+                if (sms.sended)
+                    c.put("type", "sender");
+                else
+                    c.put("type", "reciever");
+                c.put("text", sms.text);
                 array.put(c);
             }
-            params.put("Contacts", array);
-            Post(context, IndexUrl, params, new VolleyCallback() {
+            params.put("SMS", array);
+            Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
                 public void OnSuccess(JSONObject response) {
-                    sendContactsCallback.Success();
+                    sendSMSCallback.Success();
                 }
 
                 @Override
                 public void OnError(VolleyError error) {
-                    sendContactsCallback.Error();
+                    sendSMSCallback.Error();
                 }
             });
         } catch (JSONException e) {
-            sendContactsCallback.Error();
+            sendSMSCallback.Error();
         }
     }
 
