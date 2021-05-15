@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.localisermonenfant_enfant.R;
 import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.activity.ChoiceChild.ChoiceChildActivity;
 import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 
 public class Log_in extends AppCompatActivity {
@@ -48,7 +49,7 @@ public class Log_in extends AppCompatActivity {
                     c = new Connection(username.getText().toString(), password.getText().toString(), getApplicationContext(), new Connection.ConnectionCallback() {
                     @Override
                     public void Success() {
-                        Intent intent = new Intent(getApplication(), MainMenu.class);
+                        Intent intent = new Intent(getApplication(), ChoiceChildActivity.class);
                         startActivity(intent);
                     }
                     @Override

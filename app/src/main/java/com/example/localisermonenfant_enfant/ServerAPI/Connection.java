@@ -30,7 +30,15 @@ public class Connection {
     public class Child {
         int id;
         String name;
+
+        public int getId() {
+            return id;
+        }
+        public String getName() {
+            return name;
+        }
     }
+
 
     public class SMS {
         Child child;

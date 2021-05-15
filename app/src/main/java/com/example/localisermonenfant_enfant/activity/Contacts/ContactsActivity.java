@@ -99,19 +99,22 @@ public class ContactsActivity extends AppCompatActivity {
 
     void loadContact() {
 
-//        if(Log_in.c.)
-        getContactList();
+        if(Log_in.c.GetConnectionType().toString().equals("child")){
+            getContactList();
+//            Log_in.c.Se
+        }
+        else{
+//            contactsArrayList = Log_in.c.GetContacts(getApplicationContext(), );
+            setContentView(R.layout.activity_contact);
+            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        setContentView(R.layout.activity_contact);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager
-                        (this));
-        ContactsAdapter monAdapter = new ContactsAdapter(contactsArrayList);
-        recyclerView.setAdapter(monAdapter);
-        loadContact = true;
-
+            recyclerView.setLayoutManager(
+                    new LinearLayoutManager
+                            (this));
+            ContactsAdapter monAdapter = new ContactsAdapter(contactsArrayList);
+            recyclerView.setAdapter(monAdapter);
+            loadContact = true;
+        }
     }
 
 }
