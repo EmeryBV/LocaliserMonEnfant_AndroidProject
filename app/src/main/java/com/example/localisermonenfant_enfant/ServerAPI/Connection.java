@@ -50,35 +50,39 @@ public class Connection {
         public void Success();
         public void Error();
     }
-    public Connection (String user, String pass, ConnectionType connectionType, Context context, final ConnectionCallback connectionCallback) throws Exception {
-        this.user = user;
-        this.pass = pass;
-        this.connectionType = connectionType;
+    public Connection (String user, String pass, ConnectionType connectionType, Context context, final ConnectionCallback connectionCallback) {
+        try {
+            this.user = user;
+            this.pass = pass;
+            this.connectionType = connectionType;
 
-        JSONObject params = new JSONObject();
-        params.put("login", user);
-        params.put("passwd", pass);
-        if (connectionType == ConnectionType.Child)
-            params.put("role", "child");
-        else
-            params.put("role", "parent");
+            JSONObject params = new JSONObject();
+            params.put("login", user);
+            params.put("passwd", pass);
+            if (connectionType == ConnectionType.Child)
+                params.put("role", "child");
+            else
+                params.put("role", "parent");
 
-        Post(context, IndexUrl, params, new VolleyCallback() {
-            @Override
-            public void OnSuccess(JSONObject response) {
-                try {
-                    sid = response.getString("sid");
-                } catch (JSONException e) {
+            Post(context, IndexUrl, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    try {
+                        sid = response.getString("sid");
+                    } catch (JSONException e) {
+                    }
                 }
-            }
 
-            @Override
-            public void OnError(VolleyError error) {
-            }
-        });
+                @Override
+                public void OnError(VolleyError error) {
+                }
+            });
 
-        if (sid == null) connectionCallback.Error();
-        else connectionCallback.Success();
+            if (sid == null) connectionCallback.Error();
+            else connectionCallback.Success();
+        } catch (JSONException e) {
+            connectionCallback.Error();
+        }
     }
 
     public interface GetChildrenCallback {
