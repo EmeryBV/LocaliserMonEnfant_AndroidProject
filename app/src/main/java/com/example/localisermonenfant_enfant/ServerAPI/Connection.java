@@ -52,6 +52,7 @@ public class Connection {
             this.connectionType = connectionType;
 
             JSONObject params = new JSONObject();
+            params.put("type", "Connect");
             params.put("login", user);
             params.put("passwd", pass);
             if (connectionType == ConnectionType.Child)
