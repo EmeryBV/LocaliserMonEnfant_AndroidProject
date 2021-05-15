@@ -4,6 +4,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="colorRed">#DA0303</color>
     <color name="black">#BA111111</color>
     <color name="colorButton">#333333</color>
     <color name="colorLink">#0645AD</color>

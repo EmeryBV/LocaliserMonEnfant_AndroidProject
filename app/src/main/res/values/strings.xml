@@ -34,5 +34,9 @@
     <string name="Not_Sign_in"><u>"Pas encore de compte ? Inscrivez-vous"</u></string>
     <string name="Pseudo">Pseudo</string>
     <string name="Not_available">Non disponible depuis la version 23 d\'android :(</string>
+    <string name="Error">Erreur: Mauvais identifiant et/ou mot de passe</string>
+    <string name="Parent">Parent</string>
+    <string name="Child">Enfant</string>
+    <string name="Error_signIn">Erreur: Merci de rentrer un nom d\'utilisateur et un mot de passe correct</string>
 
 </resources>

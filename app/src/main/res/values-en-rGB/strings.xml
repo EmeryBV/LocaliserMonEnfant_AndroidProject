@@ -33,4 +33,8 @@
     <string name="Pseudo">Pseudo</string>
     <string name="prompt_pseudo">Pseudo</string>
     <string name="Not_available">Not available since the version 23 of android :(</string>
+    <string name="Error">Error: Wrong identifiant and/or password</string>
+    <string name="Parent">Parent</string>
+    <string name="Child">Enfant</string>
+    <string name="Error_signIn">Error: Please enter a correct username and password</string>
 </resources>

@@ -22,13 +22,22 @@
             android:id="@+id/Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="20dp"
             android:gravity="center_horizontal"
             android:text="@string/Title_Log_In"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="50sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorRed"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
 
         <EditText
             android:id="@+id/username"
