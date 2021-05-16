@@ -272,7 +272,7 @@ public class Connection {
                             s.date = jo.getString("date_time");
                             s.text = jo.getString("text_value");
                             s.id = jo.getInt("id");
-                            s.sended = jo.getString("type").equals("sender");
+                            s.sended = jo.getString("type_value").equals("sender");
                             sms.add(s);
                         }
 
