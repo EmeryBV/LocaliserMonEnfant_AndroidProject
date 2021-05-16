@@ -89,21 +89,22 @@ public class SmsActivity extends AppCompatActivity {
         Log_in.c.GetSMS(getApplicationContext(), MainMenu.child, contact, new Connection.GetSMSCallback() {
             @Override
             public void Success(ArrayList<Connection.SMS> smsList) {
-                Toast.makeText(getApplicationContext(), "JE SUIS LA " , Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "JE SUIS LA " , Toast.LENGTH_LONG).show();
                 for (Connection.SMS connectionSmsList: smsList) {
-                    listSms.add(new Sms("2",connectionSmsList.getText(),connectionSmsList.getDate(),connectionSmsList.getContact().getName(),connectionSmsList.isSended() ? "sent " : "receive"));
+                   Sms sms = new Sms(String.valueOf(connectionSmsList.getID()),connectionSmsList.getText(),connectionSmsList.getDate(),connectionSmsList.getContact().getName(),connectionSmsList.isSended() ? "sent" : "receive");
+                    listSms.add(sms);
+
                 }
+
                 setContentView(R.layout.activity_sms);
                 RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_gchat);
                 recyclerView.setLayoutManager(
                         new LinearLayoutManager
                                 (getBaseContext()));
-                Intent intent = getIntent();
-                if (intent.hasExtra("name")){ // vérifie qu'une valeur est associée à la clé “edittext”
-                    String name = intent.getStringExtra("name"); // on récupère la valeur associée à la clé
-                    TextView titleName = findViewById(R.id.titleName);
-                    titleName.setText(name);
-                }
+
+                TextView titleName = findViewById(R.id.titleName);
+                titleName.setText(contactName);
+
                 MessageAdapter monAdapter = new MessageAdapter(listSms);
                 recyclerView.setAdapter(monAdapter);
                 recyclerView.scrollToPosition(monAdapter.getItemCount()-1);

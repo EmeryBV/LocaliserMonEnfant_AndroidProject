@@ -22,7 +22,7 @@ public class SentMessageHolder extends RecyclerView.ViewHolder{
         messageText.setText(message.getMessage());
 
         // Format the stored timestamp into a readable String using method.
-        timeText.setText(DateUtils.formatDateTime(itemView.getContext(),Long.parseLong(message.getCreatedAt()),DateUtils.FORMAT_ABBREV_ALL));
+        timeText.setText(message.getCreatedAt().toString());
     }
 
     void display(Sms messages){

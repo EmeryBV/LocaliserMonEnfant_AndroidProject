@@ -1,6 +1,7 @@
 package com.example.localisermonenfant_enfant.activity.Contacts.SMS;
 
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

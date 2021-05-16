@@ -1,5 +1,6 @@
 package com.example.localisermonenfant_enfant.activity.Contacts.SMS;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ public class MessageAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Sms message =  messageList.get(position);
-
+        Log.e("Name2", message.toString());
         switch (message.getType()) {
             case "sent":
                 ((SentMessageHolder) holder).bind(message);
