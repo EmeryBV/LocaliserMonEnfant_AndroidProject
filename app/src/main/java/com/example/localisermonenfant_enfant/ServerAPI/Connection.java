@@ -2,10 +2,12 @@ package com.example.localisermonenfant_enfant.ServerAPI;
 
 import android.content.Context;
 import android.os.Debug;
+import android.provider.CallLog;
 import android.util.Log;
 
 import com.android.volley.*;
 import com.android.volley.toolbox.*;
+import com.example.localisermonenfant_enfant.activity.Contacts.CallLog.CallLogActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -110,6 +112,19 @@ public class Connection {
         public boolean isSended() {
             return sended;
         }
+    }
+
+    public class CallData {
+        int id;
+        public int getId () {return id;}
+        Contact contact;
+        public Contact getContact () {return contact;}
+        Child child;
+        public Child getChild () {return child;}
+        String date;
+        public String getDate () {return date;}
+        int type;
+        public int getType () {return type;}
     }
 
     public enum ConnectionType {Child, Parent};
@@ -289,6 +304,62 @@ public class Connection {
             });
         } catch (Exception e) {
             getSMSCallback.Error();
+        }
+    }
+
+    public interface GetCallsCallback {
+        public void Success(ArrayList<CallData> callDataList);
+        public void Error();
+    }
+    public void GetCallData (Context context, final Child child, final Contact contact, final GetCallsCallback getCallsCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "Calls");
+            params.put("ChildId", child.id);
+            params.put("ContactId", contact.id);
+
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    try {
+                        ArrayList<CallData> calls = new ArrayList<CallData>();
+                        JSONArray jsonArray = response.getJSONArray("Calls");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            CallData cd = new CallData();
+                            JSONObject jo = jsonArray.getJSONObject(i);
+                            cd.id = jo.getInt("id");
+                            cd.contact = contact;
+                            cd.child = child;
+                            cd.date = jo.getString("date_time");
+                            String type = jo.getString("type_value");
+                            switch (type) {
+                                case "out":
+                                    cd.type = CallLog.Calls.OUTGOING_TYPE;
+                                    break;
+                                case "in":
+                                    cd.type = CallLog.Calls.INCOMING_TYPE;
+                                    break;
+                                case "miss":
+                                    cd.type = CallLog.Calls.MISSED_TYPE;
+                                    break;
+                            }
+                            calls.add(cd);
+                        }
+
+                        getCallsCallback.Success(calls);
+                    } catch (Exception e) {
+                        getCallsCallback.Error();
+                    }
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    getCallsCallback.Error();
+                }
+            });
+        } catch (JSONException e) {
+            getCallsCallback.Error();
         }
     }
 
