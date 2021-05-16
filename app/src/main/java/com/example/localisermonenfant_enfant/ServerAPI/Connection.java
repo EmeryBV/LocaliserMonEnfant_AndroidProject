@@ -82,11 +82,14 @@ public class Connection {
 
 
     public class SMS {
+        int id;
         Child child;
         Contact contact;
         String text;
         String date;
         boolean sended;
+
+        public int getID() {return id;}
 
         public Child getChild() {
             return child;
@@ -268,6 +271,7 @@ public class Connection {
                             s.child = child;
                             s.date = jo.getString("date_time");
                             s.text = jo.getString("text_value");
+                            s.id = jo.getInt("id");
                             s.sended = jo.getString("type").equals("sender");
                             sms.add(s);
                         }
