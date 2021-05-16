@@ -125,6 +125,8 @@ public class Connection {
         public String getDate () {return date;}
         int type;
         public int getType () {return type;}
+        String duration;
+        public String getDuration () {return duration;}
     }
 
     public enum ConnectionType {Child, Parent};
@@ -332,6 +334,7 @@ public class Connection {
                             cd.contact = contact;
                             cd.child = child;
                             cd.date = jo.getString("date_time");
+                            cd.duration = jo.getString("duration");
                             String type = jo.getString("type_value");
                             switch (type) {
                                 case "out":
