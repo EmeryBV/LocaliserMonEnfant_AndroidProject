@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.example.localisermonenfant_enfant.Child;
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
 import com.example.localisermonenfant_enfant.activity.Contacts.ContactsActivity;
 import com.example.localisermonenfant_enfant.activity.Listen.ListenActivity;
 import com.example.localisermonenfant_enfant.activity.Media.MediaActivity;
@@ -13,11 +18,25 @@ import com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity;
 
 public class MainMenu extends AppCompatActivity {
 
+    public static int childId = -1;
+    public static String childName = "";
+    public static Connection.Child child;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         Button media_button = findViewById(R.id.medias);
+
+
+        Intent intent = getIntent();
+        if (intent.hasExtra("childId")) {
+           childId = intent.getIntExtra("childId",-1);
+            childName = intent.getStringExtra("childName");
+        }
+
+        child = new Connection.Child(childId,childName);
 
         media_button.setOnClickListener(new View.OnClickListener() {
             @Override

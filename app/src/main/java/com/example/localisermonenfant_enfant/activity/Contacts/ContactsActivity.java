@@ -13,9 +13,12 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import com.example.localisermonenfant_enfant.R;
 import com.example.localisermonenfant_enfant.ServerAPI.Connection;
 import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
+import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 
 import java.util.ArrayList;
 
@@ -99,21 +102,32 @@ public class ContactsActivity extends AppCompatActivity {
 
     void loadContact() {
 
-        if(Log_in.c.GetConnectionType().toString().equals("child")){
+        if (Log_in.c.GetConnectionType().toString().equals("child")) {
             getContactList();
-//            Log_in.c.Se
-        }
-        else{
-//            contactsArrayList = Log_in.c.GetContacts(getApplicationContext(), );
-            setContentView(R.layout.activity_contact);
-            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-            recyclerView.setLayoutManager(
-                    new LinearLayoutManager
-                            (this));
-            ContactsAdapter monAdapter = new ContactsAdapter(contactsArrayList);
-            recyclerView.setAdapter(monAdapter);
-            loadContact = true;
+        } else {
+            Log_in.c.GetContacts(getApplicationContext(), MainMenu.child, new Connection.GetContactsCallback() {
+                @Override
+                public void Success(ArrayList<Connection.Contact> contacts) {
+                    for (Connection.Contact contact: contacts) {
+                        contactsArrayList.add( new Contacts(contact.getId(),contact.getName(),contact.getNum()));
+                    }
+
+                    setContentView(R.layout.activity_contact);
+                    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                    ContactsAdapter monAdapter = new ContactsAdapter(contactsArrayList);
+                    recyclerView.setAdapter(monAdapter);
+                    loadContact = true;
+                }
+
+                @Override
+                public void Error() {
+                    Toast.makeText(getApplicationContext(), "Erreur lors du chargement des contacts" , Toast.LENGTH_LONG).show();
+                }
+            });
+
         }
     }
 

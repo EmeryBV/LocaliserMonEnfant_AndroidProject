@@ -1,10 +1,12 @@
 package com.example.localisermonenfant_enfant.activity.ChoiceChild;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +21,7 @@ import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 
 import java.util.ArrayList;
 
-public class ChildAdapter extends RecyclerView.Adapter<ViewHolderContacts> {
+public class ChildAdapter extends RecyclerView.Adapter<ViewHolderChild> {
 
     ArrayList<Connection.Child> children;
 
@@ -29,14 +31,14 @@ public class ChildAdapter extends RecyclerView.Adapter<ViewHolderContacts> {
 
     @NonNull
     @Override
-    public ViewHolderContacts onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolderChild onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
        View view = layoutInflater.inflate((R.layout.item_child),parent,false);
-       return new ViewHolderContacts(view);
+       return new ViewHolderChild(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolderContacts holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolderChild holder, int position) {
     holder.display(children.get(position));
     }
 
@@ -46,31 +48,33 @@ public class ChildAdapter extends RecyclerView.Adapter<ViewHolderContacts> {
     }
 }
 
-class ViewHolderContacts extends RecyclerView.ViewHolder{
+class ViewHolderChild extends RecyclerView.ViewHolder{
 
     private TextView tvName;
     private TextView tvId;
-    private RecyclerView recyclerView;
+    private LinearLayout LinearLayout;
 
 
-    public ViewHolderContacts(@NonNull final View itemView) {
+    public ViewHolderChild(@NonNull final View itemView) {
         super(itemView);
 
         tvName =  itemView.findViewById(R.id.tv_name);
-//        recyclerView = itemView.findViewById(R.id.recycler_view);
-//        recyclerView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(itemView.getContext(), MainMenu.class);
-//                intent.putExtra("child_id", tvId.toString());
-//                itemView.getContext().startActivity(intent);
-//            }
-//        });
+
 
     }
 
-    void display(Connection.Child child){
+    void display(final Connection.Child child){
         tvName.setText(child.getName());
+        LinearLayout = itemView.findViewById(R.id.linearLayout);
+        LinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(itemView.getContext(), MainMenu.class);
+                intent.putExtra("child", child.getId());
+                intent.putExtra("childName", child.getName());
+                itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
 }
