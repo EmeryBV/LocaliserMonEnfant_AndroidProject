@@ -81,7 +81,6 @@ public class SmsActivity extends AppCompatActivity {
         super.onResume();
 
 
-
     }
 
     public void displayMessage(){
@@ -93,7 +92,6 @@ public class SmsActivity extends AppCompatActivity {
                 for (Connection.SMS connectionSmsList: smsList) {
                    Sms sms = new Sms(String.valueOf(connectionSmsList.getID()),connectionSmsList.getText(),connectionSmsList.getDate(),connectionSmsList.getContact().getName(),connectionSmsList.isSended() ? "sent" : "receive");
                     listSms.add(sms);
-
                 }
 
                 setContentView(R.layout.activity_sms);
@@ -161,7 +159,6 @@ public class SmsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No message to show!", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public String getContactbyPhoneNumber(Context c, String phoneNumber) {
