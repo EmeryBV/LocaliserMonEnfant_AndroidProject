@@ -181,7 +181,7 @@ public class Connection {
         try {
             JSONObject params = new JSONObject();
             params.put("sid", sid);
-            params.put("type", "ChildrenList");
+            params.put("type", "ContactList");
             params.put("ChildId", child.id);
 
             Post(context, CommandURL, params, new VolleyCallback() {
@@ -222,8 +222,9 @@ public class Connection {
         try {
             JSONObject params = new JSONObject();
             params.put("sid", sid);
-            params.put("type", "SMS ");
+            params.put("type", "SMS");
             params.put("ChildId", child.id);
+            params.put("ContactId", contact.id);
 
             Post(context, CommandURL, params, new VolleyCallback() {
                 @Override
