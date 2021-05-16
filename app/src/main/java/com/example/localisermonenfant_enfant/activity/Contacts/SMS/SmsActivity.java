@@ -89,10 +89,9 @@ public class SmsActivity extends AppCompatActivity {
         Log_in.c.GetSMS(getApplicationContext(), MainMenu.child, contact, new Connection.GetSMSCallback() {
             @Override
             public void Success(ArrayList<Connection.SMS> smsList) {
-
+                Toast.makeText(getApplicationContext(), "JE SUIS LA " , Toast.LENGTH_LONG).show();
                 for (Connection.SMS connectionSmsList: smsList) {
-//                    listSms.add(new Sms(smsList.))
-
+                    listSms.add(new Sms("2",connectionSmsList.getText(),connectionSmsList.getDate(),connectionSmsList.getContact().getName(),connectionSmsList.isSended() ? "sent " : "receive"));
                 }
                 setContentView(R.layout.activity_sms);
                 RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_gchat);

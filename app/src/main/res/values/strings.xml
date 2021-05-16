@@ -38,5 +38,7 @@
     <string name="Parent">Parent</string>
     <string name="Child">Enfant</string>
     <string name="Error_signIn">Erreur: Merci de rentrer un nom d\'utilisateur et un mot de passe correct</string>
+    <string name="StartSaveVoice">Démarrer l\'enregistrement audio</string>
+    <string name="EndSaveVoice">Stopper l\'enregistrement audio</string>
 
 </resources>

@@ -37,4 +37,6 @@
     <string name="Parent">Parent</string>
     <string name="Child">Enfant</string>
     <string name="Error_signIn">Error: Please enter a correct username and password</string>
+    <string name="StartSaveVoice">Please click on the button to start the recording</string>
+    <string name="EndSaveVoice">Please click on the button to stop the recording</string>
 </resources>

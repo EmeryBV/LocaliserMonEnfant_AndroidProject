@@ -87,6 +87,26 @@ public class Connection {
         String text;
         String date;
         boolean sended;
+
+        public Child getChild() {
+            return child;
+        }
+
+        public Contact getContact() {
+            return contact;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public boolean isSended() {
+            return sended;
+        }
     }
 
     public enum ConnectionType {Child, Parent};

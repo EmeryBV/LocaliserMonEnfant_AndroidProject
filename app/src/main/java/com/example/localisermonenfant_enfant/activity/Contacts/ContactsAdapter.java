@@ -1,6 +1,7 @@
 package com.example.localisermonenfant_enfant.activity.Contacts;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,11 +80,10 @@ class ViewHolderContacts extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(itemView.getContext(), SmsActivity.class);
-                intent.putExtra("contactID", contact.getId());
+                intent.putExtra("contactID", String.valueOf(contact.getId()));
                 intent.putExtra("contactPhoneNumber", contact.getNumber());
                 intent.putExtra("contactName",contact.getName());
 //                        Toast.makeText(getApplicationContext(), "mon message" + contactsArrayList.get(position).getNumber(), Toast.LENGTH_SHORT).show();
-//                        Log.i(TAG, "tel " + contactsArrayList.get(position).getNumber());
 
                 itemView.getContext().startActivity(intent);
             }
