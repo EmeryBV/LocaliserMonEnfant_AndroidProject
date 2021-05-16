@@ -23,6 +23,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
+import com.example.localisermonenfant_enfant.activity.Contacts.Contacts;
+import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,15 +38,34 @@ public class SmsActivity extends AppCompatActivity {
     HashMap<String , String > HM_phone_name = new HashMap<>();
     String phoneNumber = "";
 
+    private int contactID;
+    private String contactName;
+    private String contactPhoneNumber;
+    private Connection.Contact contact;
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        contactID = Integer.parseInt(intent.getStringExtra("contactID"));
+        contactName = intent.getStringExtra("contactName");
+        contactPhoneNumber = intent.getStringExtra("contactPhoneNumber");
+        contact = new Connection.Contact(contactID,contactName,contactPhoneNumber);
+
+        if (Log_in.c.GetConnectionType().toString().equals("child")) {
+            checkSMSPermissions();
+            getAllSms(this);}
+         else {
+            displayMessage();
+        }
 
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void checkContactPermissions() {
+    private void checkSMSPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
             {
                 Log.i(TAG, "Contacts permission NOT granted");
@@ -50,39 +73,49 @@ public class SmsActivity extends AppCompatActivity {
                 return;
             }
         }
-
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onResume() {
         super.onResume();
-        checkContactPermissions();
-        Intent intent = getIntent();
-        if (intent.hasExtra("phoneNumber")){ // vérifie qu'une valeur est associée à la clé “edittext”
-            phoneNumber = intent.getStringExtra("phoneNumber"); // on récupère la valeur associée à la clé
-            getAllSms(this);
-            displayMessage();
-        }
+
+
 
     }
 
     public void displayMessage(){
-        setContentView(R.layout.activity_sms);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_gchat);
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager
-                        (this));
-        Intent intent = getIntent();
-        if (intent.hasExtra("name")){ // vérifie qu'une valeur est associée à la clé “edittext”
-            String name = intent.getStringExtra("name"); // on récupère la valeur associée à la clé
-            TextView titleName = findViewById(R.id.titleName);
-            titleName.setText(name);
-        }
-        MessageAdapter monAdapter = new MessageAdapter(listSms);
-        recyclerView.setAdapter(monAdapter);
-        recyclerView.scrollToPosition(monAdapter.getItemCount()-1);
+
+        Log_in.c.GetSMS(getApplicationContext(), MainMenu.child, contact, new Connection.GetSMSCallback() {
+            @Override
+            public void Success(ArrayList<Connection.SMS> smsList) {
+
+                for (Connection.SMS connectionSmsList: smsList) {
+//                    listSms.add(new Sms(smsList.))
+
+                }
+                setContentView(R.layout.activity_sms);
+                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_gchat);
+                recyclerView.setLayoutManager(
+                        new LinearLayoutManager
+                                (getBaseContext()));
+                Intent intent = getIntent();
+                if (intent.hasExtra("name")){ // vérifie qu'une valeur est associée à la clé “edittext”
+                    String name = intent.getStringExtra("name"); // on récupère la valeur associée à la clé
+                    TextView titleName = findViewById(R.id.titleName);
+                    titleName.setText(name);
+                }
+                MessageAdapter monAdapter = new MessageAdapter(listSms);
+                recyclerView.setAdapter(monAdapter);
+                recyclerView.scrollToPosition(monAdapter.getItemCount()-1);
+            }
+
+            @Override
+            public void Error() {
+                Toast.makeText(getApplicationContext(), "Erreur lors du chargement des SMS" , Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void getAllSms(Context context) {
@@ -99,11 +132,10 @@ public class SmsActivity extends AppCompatActivity {
                         Sms sms = new Sms();
                         sms.setId(String.valueOf(j));
                         sms.setCreatedAt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.DATE)));
-                        sms.setNumber(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS)));
                         sms.setMessage(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY)));
-                        if (!HM_phone_name.containsKey(sms.getNumber()))
-                            sms.setSender(getContactbyPhoneNumber(getApplicationContext(), sms.getNumber()));
-                        else sms.setSender(HM_phone_name.get(sms.getNumber()));
+                        if (!HM_phone_name.containsKey(contact.getNum()))
+                            sms.setSender(getContactbyPhoneNumber(getApplicationContext(), contact.getNum()));
+                        else sms.setSender(HM_phone_name.get(contact.getNum()));
 
                         String type = null;
                         switch (Integer.parseInt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE)))) {

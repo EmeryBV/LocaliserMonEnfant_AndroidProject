@@ -55,12 +55,20 @@ class ViewHolderContacts extends RecyclerView.ViewHolder{
         tvName =  itemView.findViewById(R.id.tv_name);
         tvNumber=  itemView.findViewById(R.id.tv_number);
         imagePhoneView = itemView.findViewById(R.id.imagePhoneView);
+
+    }
+
+    void display(final Contacts contact){
+        tvName.setText(contact.getName());
+        tvNumber.setText(contact.getNumber());
+
         imagePhoneView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(itemView.getContext(), CallLogActivity.class);
-                intent.putExtra("phoneNumber", tvNumber.getText().toString().replaceAll("\\s+",""));
-                intent.putExtra("name",tvName.getText().toString());
+                intent.putExtra("contactID", contact.getId());
+                intent.putExtra("contactPhoneNumber", contact.getNumber());
+                intent.putExtra("contactName",contact.getName());
 
                 itemView.getContext().startActivity(intent);
             }
@@ -71,19 +79,16 @@ class ViewHolderContacts extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(itemView.getContext(), SmsActivity.class);
-                intent.putExtra("phoneNumber", tvNumber.getText().toString().replaceAll("\\s+",""));
-                intent.putExtra("name",tvName.getText().toString());
+                intent.putExtra("contactID", contact.getId());
+                intent.putExtra("contactPhoneNumber", contact.getNumber());
+                intent.putExtra("contactName",contact.getName());
 //                        Toast.makeText(getApplicationContext(), "mon message" + contactsArrayList.get(position).getNumber(), Toast.LENGTH_SHORT).show();
 //                        Log.i(TAG, "tel " + contactsArrayList.get(position).getNumber());
 
                 itemView.getContext().startActivity(intent);
             }
         });
-    }
 
-    void display(Contacts contacts){
-        tvName.setText(contacts.getName());
-        tvNumber.setText(contacts.getNumber());
     }
 
 }

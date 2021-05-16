@@ -31,7 +31,11 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (Log_in.c.GetConnectionType().toString().equals("child")) {
+            checkContactPermissions();
+        } else {
+            loadContact();
+        }
     }
 
     private void getContactList() {
@@ -75,7 +79,6 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        checkContactPermissions();
 
     }
 
@@ -89,7 +92,8 @@ public class ContactsActivity extends AppCompatActivity {
                 return;
             }
         }
-        loadContact();
+        getContactList();
+
     }
 
     @Override
@@ -102,10 +106,6 @@ public class ContactsActivity extends AppCompatActivity {
 
     void loadContact() {
 
-        if (Log_in.c.GetConnectionType().toString().equals("child")) {
-            getContactList();
-
-        } else {
             Log_in.c.GetContacts(getApplicationContext(), MainMenu.child, new Connection.GetContactsCallback() {
                 @Override
                 public void Success(ArrayList<Connection.Contact> contacts) {
@@ -128,7 +128,7 @@ public class ContactsActivity extends AppCompatActivity {
                 }
             });
 
-        }
+
     }
 
 }

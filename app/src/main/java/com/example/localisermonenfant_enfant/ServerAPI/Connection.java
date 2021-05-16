@@ -21,10 +21,19 @@ public class Connection {
 
     public static String CommandURL = "https://www.lme.romimap.com/commands.php";
 
-    public class Contact {
+    public static class Contact {
         int id;
         String name;
         String num;
+
+        public Contact() {
+        }
+
+        public Contact(int id, String name, String num) {
+            this.id = id;
+            this.name = name;
+            this.num = num;
+        }
 
         public int getId() {
             return id;

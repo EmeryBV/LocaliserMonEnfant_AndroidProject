@@ -3,6 +3,7 @@ package com.example.localisermonenfant_enfant.activity.MainMenu;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -18,8 +19,8 @@ import com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity;
 
 public class MainMenu extends AppCompatActivity {
 
-    public static int childId = -1;
-    public static String childName = "";
+    private int childId ;
+    private  String childName = "";
     public static Connection.Child child;
 
     @Override
@@ -31,11 +32,11 @@ public class MainMenu extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        if (intent.hasExtra("childId")) {
-           childId = intent.getIntExtra("childId",-1);
+           childId = Integer.parseInt(intent.getStringExtra("childId"));
             childName = intent.getStringExtra("childName");
-        }
 
+        Log.e("childId : ",  String.valueOf(childId));
+        Log.e("childName : " , childName);
         child = new Connection.Child(childId,childName);
 
         media_button.setOnClickListener(new View.OnClickListener() {

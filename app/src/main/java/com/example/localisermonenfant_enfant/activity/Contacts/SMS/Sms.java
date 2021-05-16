@@ -5,8 +5,19 @@ public class Sms {
         private String message;
         private String createdAt;
         private String sender;
-        private String number;
         private String type;
+
+
+    public Sms() {
+    }
+
+    public Sms(String id, String message, String createdAt, String sender, String type) {
+        this.id = id;
+        this.message = message;
+        this.createdAt = createdAt;
+        this.sender = sender;
+        this.type = type;
+    }
 
     public String getId() {
         return id;
@@ -40,13 +51,6 @@ public class Sms {
         this.sender = sender;
     }
 
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
 
     public String getType() {
         return type;
@@ -63,7 +67,6 @@ public class Sms {
                 ", _msg='" + message + '\'' +
                 ", _date='" + createdAt + '\'' +
                 ", _name='" + sender + '\'' +
-                ", _number='" + number + '\'' +
                 '}';
     }
 }

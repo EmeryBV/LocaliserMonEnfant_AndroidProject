@@ -70,7 +70,7 @@ class ViewHolderChild extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(itemView.getContext(), MainMenu.class);
-                intent.putExtra("child", child.getId());
+                intent.putExtra("childId", String.valueOf(child.getId()));
                 intent.putExtra("childName", child.getName());
                 itemView.getContext().startActivity(intent);
             }
