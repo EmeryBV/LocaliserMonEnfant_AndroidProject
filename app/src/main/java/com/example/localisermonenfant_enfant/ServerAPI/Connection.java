@@ -376,12 +376,12 @@ public class Connection {
                 c.put("contact_name", sms.contact.name);
                 c.put("contact_num", sms.contact.num);
                 c.put("id_child", sms.child.id);
-                c.put("date", sms.date);
+                c.put("date_time", sms.date);
                 if (sms.sended)
                     c.put("type", "sender");
                 else
                     c.put("type", "reciever");
-                c.put("text", sms.text);
+                c.put("text_value", sms.text);
                 array.put(c);
             }
             params.put("SMS", array);
