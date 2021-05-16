@@ -115,6 +115,8 @@ public class Connection {
     }
 
     public class CallData {
+        int id;
+        public int getId () {return id;}
         Contact contact;
         public Contact getContact () {return contact;}
         Child child;
@@ -326,6 +328,7 @@ public class Connection {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             CallData cd = new CallData();
                             JSONObject jo = jsonArray.getJSONObject(i);
+                            cd.id = jo.getInt("id");
                             cd.contact = contact;
                             cd.child = child;
                             cd.date = jo.getString("date_time");
