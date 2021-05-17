@@ -8,28 +8,25 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
-import android.provider.ContactsContract;
-import android.provider.Telephony;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
 import com.example.localisermonenfant_enfant.activity.Contacts.SMS.MessageAdapter;
 import com.example.localisermonenfant_enfant.activity.Contacts.SMS.Sms;
+import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 public class CallLogActivity extends AppCompatActivity {
 
@@ -39,18 +36,92 @@ public class CallLogActivity extends AppCompatActivity {
 
     String phoneNumber;
 
+    private int contactID;
+    private String contactName;
+    private String contactPhoneNumber;
+    private Connection.Contact contact;
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Intent intent = getIntent();
+        contactID = Integer.parseInt(intent.getStringExtra("contactID"));
+        contactName = intent.getStringExtra("contactName");
+        contactPhoneNumber = intent.getStringExtra("contactPhoneNumber");
+        contact = new Connection.Contact(contactID,contactName,contactPhoneNumber);
+        if (Log_in.c.GetConnectionType().toString().equals("child")) {
+            checkCallLogPermissions();
+        }
+        else {
+            displayMessage();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void checkCallLogPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             {
                 Log.i(TAG, "Contacts permission NOT granted");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG}, MY_READ_PERMISSION_CODE);
                 return;
             }
-        }else getCallDetails();
+
+        } getCallDetails();
     }
+
+    public void displayMessage(){
+
+        Log_in.c.GetCallData(getApplicationContext(), MainMenu.child, contact, new Connection.GetCallsCallback() {
+            @Override
+            public void Success(ArrayList<Connection.CallData> callDataList) {
+
+
+                for (Connection.CallData connectionCallLog: callDataList) {
+
+
+                    int dircode = Integer.parseInt(String.valueOf(connectionCallLog.getType()));
+                    String dir ="";
+                    switch (dircode) {
+                        case CallLog.Calls.OUTGOING_TYPE:
+                            dir = getString(R.string.OutGoing);
+                            break;
+
+                        case CallLog.Calls.INCOMING_TYPE:
+                            dir = getString(R.string.Incoming);
+                            break;
+
+                        case CallLog.Calls.MISSED_TYPE:
+                            dir = getString(R.string.Missed);
+                            break;
+                    }
+                    CallLogModel callLog = new CallLogModel(String.valueOf(contactPhoneNumber)
+                            ,connectionCallLog.getDate(),connectionCallLog.getDuration(),dir);
+                    callLogList.add(callLog);
+                }
+                setContentView(R.layout.activity_call_log);
+                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                recyclerView.setLayoutManager(
+                        new LinearLayoutManager
+                                (getBaseContext()));
+
+                TextView titleName = findViewById(R.id.titleName);
+                titleName.setText(contactName);
+
+                CallLogAdapter monAdapter = new CallLogAdapter(callLogList);
+                recyclerView.setAdapter(monAdapter);
+
+            }
+
+            @Override
+            public void Error() {
+                Toast.makeText(getApplicationContext(), "Erreur lors du chargement des appels" , Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+
 
 
     private void getCallDetails() {
@@ -58,8 +129,6 @@ public class CallLogActivity extends AppCompatActivity {
         if (intent.hasExtra("phoneNumber")){ // vérifie qu'une valeur est associée à la clé “edittext”
             phoneNumber = intent.getStringExtra("phoneNumber"); // on récupère la valeur associée à la clé
         }
-
-
         setContentView(R.layout.activity_call_log);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(
@@ -102,16 +171,11 @@ public class CallLogActivity extends AppCompatActivity {
         }
 
         managedCursor.close();
-
-
-
         if (intent.hasExtra("name")){ // vérifie qu'une valeur est associée à la clé “edittext”
             String name = intent.getStringExtra("name"); // on récupère la valeur associée à la clé
             TextView titleName = findViewById(R.id.titleName);
             titleName.setText(name);
         }
-
-
 
         CallLogAdapter callLogAdapter = new CallLogAdapter(callLogList);
         recyclerView.setAdapter(callLogAdapter);

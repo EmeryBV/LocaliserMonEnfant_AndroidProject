@@ -63,10 +63,11 @@ public class Sms {
     @Override
     public String toString() {
         return "Sms{" +
-                "_id='" + id + '\'' +
-                ", _msg='" + message + '\'' +
-                ", _date='" + createdAt + '\'' +
-                ", _name='" + sender + '\'' +
+                "id='" + id + '\'' +
+                ", message='" + message + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", sender='" + sender + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

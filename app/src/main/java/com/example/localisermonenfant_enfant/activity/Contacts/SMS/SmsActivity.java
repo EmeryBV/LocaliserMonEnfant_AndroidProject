@@ -54,12 +54,34 @@ public class SmsActivity extends AppCompatActivity {
         contactPhoneNumber = intent.getStringExtra("contactPhoneNumber");
         contact = new Connection.Contact(contactID,contactName,contactPhoneNumber);
 
-        if (Log_in.c.GetConnectionType().toString().equals("child")) {
+//        if (Log_in.c.GetConnectionType().toString().equals("parent")) {
             checkSMSPermissions();
-            getAllSms(this);}
-         else {
-            displayMessage();
-        }
+            getAllSms(getApplicationContext());
+            ArrayList<Connection.SMS> smsSend = new ArrayList<>();
+            for (Sms sms:listSms) {
+                Connection.Contact contact1 = new Connection.Contact(0,"Baptiste","46489");
+                Connection.SMS sms1 = new Connection.SMS(0,null,contact1,sms.getMessage(),sms.getCreatedAt(),
+                        sms.getType().equals("sent") ? true : false);
+                smsSend.add(sms1);
+            }
+        Log.e("DEBUG: ",listSms.toString());
+        Log_in.c.SendSMS(getApplicationContext(), smsSend, new Connection.SendSMSCallback() {
+            @Override
+            public void Success() {
+                Toast.makeText(getApplicationContext(), "Sms envoyés !" , Toast.LENGTH_LONG).show();
+                Log.e("DEBUG: ","Sms envoyés !");
+            }
+
+            @Override
+            public void Error() {
+                Toast.makeText(getApplicationContext(), "Erreur lors de l'envoie des SMS" , Toast.LENGTH_LONG).show();
+                Log.e("DEBUG: ","Erreur lors de l'envoie des SMS");
+            }
+        });
+//        }
+//         else {
+//            displayMessage();
+//        }
 
     }
 
@@ -81,7 +103,6 @@ public class SmsActivity extends AppCompatActivity {
         super.onResume();
 
 
-
     }
 
     public void displayMessage(){
@@ -89,21 +110,22 @@ public class SmsActivity extends AppCompatActivity {
         Log_in.c.GetSMS(getApplicationContext(), MainMenu.child, contact, new Connection.GetSMSCallback() {
             @Override
             public void Success(ArrayList<Connection.SMS> smsList) {
-                Toast.makeText(getApplicationContext(), "JE SUIS LA " , Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "JE SUIS LA " , Toast.LENGTH_LONG).show();
                 for (Connection.SMS connectionSmsList: smsList) {
-                    listSms.add(new Sms("2",connectionSmsList.getText(),connectionSmsList.getDate(),connectionSmsList.getContact().getName(),connectionSmsList.isSended() ? "sent " : "receive"));
+                   Sms sms = new Sms(String.valueOf(connectionSmsList.getID()),connectionSmsList.getText(),
+                           connectionSmsList.getDate(),connectionSmsList.getContact().getName(),connectionSmsList.isSended() ? "sent" : "receive");
+                    listSms.add(sms);
                 }
+
                 setContentView(R.layout.activity_sms);
                 RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_gchat);
                 recyclerView.setLayoutManager(
                         new LinearLayoutManager
                                 (getBaseContext()));
-                Intent intent = getIntent();
-                if (intent.hasExtra("name")){ // vérifie qu'une valeur est associée à la clé “edittext”
-                    String name = intent.getStringExtra("name"); // on récupère la valeur associée à la clé
-                    TextView titleName = findViewById(R.id.titleName);
-                    titleName.setText(name);
-                }
+
+                TextView titleName = findViewById(R.id.titleName);
+                titleName.setText(contactName);
+
                 MessageAdapter monAdapter = new MessageAdapter(listSms);
                 recyclerView.setAdapter(monAdapter);
                 recyclerView.scrollToPosition(monAdapter.getItemCount()-1);
@@ -160,7 +182,6 @@ public class SmsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No message to show!", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public String getContactbyPhoneNumber(Context c, String phoneNumber) {

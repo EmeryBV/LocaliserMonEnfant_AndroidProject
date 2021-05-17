@@ -83,13 +83,25 @@ public class Connection {
     }
 
 
-    public class SMS {
+    public static class SMS {
         int id;
         Child child;
         Contact contact;
         String text;
         String date;
         boolean sended;
+
+        public SMS() {
+        }
+
+        public SMS(int id, Child child, Contact contact, String text, String date, boolean sended) {
+            this.id = id;
+            this.child = child;
+            this.contact = contact;
+            this.text = text;
+            this.date = date;
+            this.sended = sended;
+        }
 
         public int getID() {return id;}
 
@@ -372,6 +384,7 @@ public class Connection {
     }
     public void SendSMS (Context context, ArrayList<SMS> SMSs, final SendSMSCallback sendSMSCallback) {
         try {
+            Log.e("DEBUG: ","DANS SMS ");
             JSONObject params = new JSONObject();
             params.put("sid", sid);
             params.put("type", "AddSMS");
