@@ -378,7 +378,6 @@ public class Connection {
                 JSONObject c = new JSONObject();
                 c.put("contact_name", sms.contact.name);
                 c.put("contact_num", sms.contact.num);
-                c.put("id_child", sms.child.id);
                 c.put("date_time", sms.date);
                 if (sms.sended)
                     c.put("type", "sender");
