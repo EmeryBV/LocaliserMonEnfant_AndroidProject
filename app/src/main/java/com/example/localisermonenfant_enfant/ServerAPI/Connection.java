@@ -1,3 +1,4 @@
+
 package com.example.localisermonenfant_enfant.ServerAPI;
 
 import android.content.Context;
@@ -416,7 +417,7 @@ public class Connection {
         }
     }
 
-    interface GetGPSCallback {
+    public interface GetGPSCallback {
         public void OnSuccess(double lat, double lon);
         public void OnError();
     }
@@ -450,7 +451,7 @@ public class Connection {
         }
     }
 
-    interface SetGPSCallback {
+    public interface SetGPSCallback {
         public void OnSuccess();
         public void OnError();
     }
@@ -477,7 +478,7 @@ public class Connection {
         }
     }
 
-    interface GetSMSLastDateCallback {
+    public interface GetSMSLastDateCallback {
         public void OnSuccess(String date);
         public void OnError();
     }
@@ -503,6 +504,78 @@ public class Connection {
             });
         } catch (JSONException e) {
             getSMSLastDateCallback.OnError();
+        }
+    }
+
+    public class Parent {
+        int id;
+        public int getId () {return id;}
+        String name;
+        public String getName () {return name;}
+        String email;
+        public String getEmail () {return email;}
+    }
+    public interface GetParentCallback {
+        public void OnSuccess (Parent parent);
+        public void OnError ();
+    }
+    public void GetParent (Context context, final GetParentCallback getParentCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "GetParent");
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    try {
+                        if (response.getBoolean("parent")) {
+                            Parent p = new Parent();
+                            p.id = response.getInt("id");
+                            p.email = response.getString("email");
+                            p.name = response.getString("name");
+                            getParentCallback.OnSuccess(p);
+                        } else {
+                            getParentCallback.OnSuccess(null);
+                        }
+                    } catch (JSONException e) {
+                        getParentCallback.OnError();
+                    }
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    getParentCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            getParentCallback.OnError();
+        }
+    }
+
+    public interface SetParentCallback {
+        public void OnSuccess ();
+        public void OnError ();
+    }
+    public void SetParent (Context context, String user, String pass, final SetParentCallback setParentCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "SetParent");
+            params.put("user", user);
+            params.put("pass", pass);
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    setParentCallback.OnSuccess();
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    setParentCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            setParentCallback.OnError();
         }
     }
 
