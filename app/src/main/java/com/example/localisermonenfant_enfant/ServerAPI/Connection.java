@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class Connection {
-
     public static String CommandURL = "https://www.lme.romimap.com/commands.php";
 
     public static class Contact {
