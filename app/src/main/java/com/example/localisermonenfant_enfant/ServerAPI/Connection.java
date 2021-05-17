@@ -477,6 +477,35 @@ public class Connection {
         }
     }
 
+    interface GetSMSLastDateCallback {
+        public void OnSuccess(String date);
+        public void OnError();
+    }
+    public void GetSMSLastDateCallback (Context context, final GetSMSLastDateCallback getSMSLastDateCallback){
+        try {
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "SMSLastDate");
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    try {
+                        getSMSLastDateCallback.OnSuccess(response.getString("date"));
+                    } catch (JSONException e) {
+                        getSMSLastDateCallback.OnError();
+                    }
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    getSMSLastDateCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            getSMSLastDateCallback.OnError();
+        }
+    }
+
     interface VolleyCallback {
         public void OnSuccess(JSONObject response);
         public void OnError(VolleyError error);
