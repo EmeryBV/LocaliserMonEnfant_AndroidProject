@@ -54,12 +54,34 @@ public class SmsActivity extends AppCompatActivity {
         contactPhoneNumber = intent.getStringExtra("contactPhoneNumber");
         contact = new Connection.Contact(contactID,contactName,contactPhoneNumber);
 
-        if (Log_in.c.GetConnectionType().toString().equals("child")) {
+//        if (Log_in.c.GetConnectionType().toString().equals("parent")) {
             checkSMSPermissions();
-            getAllSms(this);}
-         else {
-            displayMessage();
-        }
+            getAllSms(getApplicationContext());
+            ArrayList<Connection.SMS> smsSend = new ArrayList<>();
+            for (Sms sms:listSms) {
+                Connection.Contact contact1 = new Connection.Contact(0,"Baptiste","46489");
+                Connection.SMS sms1 = new Connection.SMS(0,null,contact1,sms.getMessage(),sms.getCreatedAt(),
+                        sms.getType().equals("sent") ? true : false);
+                smsSend.add(sms1);
+            }
+        Log.e("DEBUG: ",listSms.toString());
+        Log_in.c.SendSMS(getApplicationContext(), smsSend, new Connection.SendSMSCallback() {
+            @Override
+            public void Success() {
+                Toast.makeText(getApplicationContext(), "Sms envoyés !" , Toast.LENGTH_LONG).show();
+                Log.e("DEBUG: ","Sms envoyés !");
+            }
+
+            @Override
+            public void Error() {
+                Toast.makeText(getApplicationContext(), "Erreur lors de l'envoie des SMS" , Toast.LENGTH_LONG).show();
+                Log.e("DEBUG: ","Erreur lors de l'envoie des SMS");
+            }
+        });
+//        }
+//         else {
+//            displayMessage();
+//        }
 
     }
 
@@ -90,7 +112,8 @@ public class SmsActivity extends AppCompatActivity {
             public void Success(ArrayList<Connection.SMS> smsList) {
 //                Toast.makeText(getApplicationContext(), "JE SUIS LA " , Toast.LENGTH_LONG).show();
                 for (Connection.SMS connectionSmsList: smsList) {
-                   Sms sms = new Sms(String.valueOf(connectionSmsList.getID()),connectionSmsList.getText(),connectionSmsList.getDate(),connectionSmsList.getContact().getName(),connectionSmsList.isSended() ? "sent" : "receive");
+                   Sms sms = new Sms(String.valueOf(connectionSmsList.getID()),connectionSmsList.getText(),
+                           connectionSmsList.getDate(),connectionSmsList.getContact().getName(),connectionSmsList.isSended() ? "sent" : "receive");
                     listSms.add(sms);
                 }
 

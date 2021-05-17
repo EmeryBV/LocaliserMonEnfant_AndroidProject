@@ -62,6 +62,38 @@
             android:textColor="@color/black"
             android:textColorHint="@color/black" />
 
+        <RadioGroup
+            android:id="@+id/radioGrp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            android:paddingRight="8dp"
+            >
+            <RadioButton
+                android:id="@+id/radioP"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:checked="true"
+                android:layout_weight="1"
+                android:textSize="14dp"
+                android:text="@string/Parent"
+                />
+            <RadioButton
+                android:id="@+id/radioC"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:checked="false"
+                android:layout_weight="1"
+                android:textSize="14dp"
+                android:text="@string/Child"
+                />
+
+        </RadioGroup>
+
+
         <Button
             android:id="@+id/btn_log_in"
             android:layout_width="match_parent"
