@@ -384,7 +384,6 @@ public class Connection {
     }
     public void SendSMS (Context context, ArrayList<SMS> SMSs, final SendSMSCallback sendSMSCallback) {
         try {
-            Log.e("DEBUG: ","DANS SMS ");
             JSONObject params = new JSONObject();
             params.put("sid", sid);
             params.put("type", "AddSMS");
@@ -415,6 +414,41 @@ public class Connection {
             });
         } catch (JSONException e) {
             sendSMSCallback.Error();
+        }
+    }
+
+    interface GetGPSCallback {
+        public void OnSuccess(String lat, String lon);
+        public void OnError();
+    }
+    public void GetGPS (Context context, Child child, final GetGPSCallback getGPSCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "GetGPS");
+            params.put("ChildId", child.id);
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    try {
+                        if (response.getBoolean("return")) {
+                            String gps = response.getString("GPS");
+                            getGPSCallback.OnSuccess(gps.split(",")[0], gps.split(",")[1]);
+                        } else {
+                            getGPSCallback.OnError();
+                        }
+                    } catch (JSONException e) {
+                        getGPSCallback.OnError();
+                    }
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+
+                }
+            });
+        } catch (JSONException e) {
+            getGPSCallback.OnError();
         }
     }
 
