@@ -373,6 +373,8 @@ public class Connection {
     public void SendSMS (Context context, ArrayList<SMS> SMSs, final SendSMSCallback sendSMSCallback) {
         try {
             JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "AddSMS");
             JSONArray array = new JSONArray();
             for (SMS sms : SMSs) {
                 JSONObject c = new JSONObject();

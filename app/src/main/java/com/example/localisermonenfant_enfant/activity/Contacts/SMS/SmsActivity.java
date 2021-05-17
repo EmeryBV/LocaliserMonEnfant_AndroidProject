@@ -36,7 +36,7 @@ public class SmsActivity extends AppCompatActivity {
     int REQUEST_PHONE_CALL = 1237;
     ArrayList<Sms> listSms = new ArrayList<>();
     HashMap<String , String > HM_phone_name = new HashMap<>();
-    String phoneNumber = "";
+    String phoneNumber = "  ";
 
     private int contactID;
     private String contactName;
