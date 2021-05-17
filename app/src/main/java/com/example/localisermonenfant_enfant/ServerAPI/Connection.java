@@ -418,7 +418,7 @@ public class Connection {
     }
 
     interface GetGPSCallback {
-        public void OnSuccess(String lat, String lon);
+        public void OnSuccess(double lat, double lon);
         public void OnError();
     }
     public void GetGPS (Context context, Child child, final GetGPSCallback getGPSCallback) {
@@ -432,8 +432,7 @@ public class Connection {
                 public void OnSuccess(JSONObject response) {
                     try {
                         if (response.getBoolean("return")) {
-                            String gps = response.getString("GPS");
-                            getGPSCallback.OnSuccess(gps.split(",")[0], gps.split(",")[1]);
+                            getGPSCallback.OnSuccess(response.getDouble("lat"), response.getDouble("lon"));
                         } else {
                             getGPSCallback.OnError();
                         }
@@ -444,11 +443,38 @@ public class Connection {
 
                 @Override
                 public void OnError(VolleyError error) {
-
+                    getGPSCallback.OnError();
                 }
             });
         } catch (JSONException e) {
             getGPSCallback.OnError();
+        }
+    }
+
+    interface SetGPSCallback {
+        public void OnSuccess();
+        public void OnError();
+    }
+    public void SetGPS (Context context, double lon, double lat, final SetGPSCallback setGPSCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "setGPS");
+            params.put("lat", lat);
+            params.put("lon", lon);
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                   setGPSCallback.OnSuccess();
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    setGPSCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            setGPSCallback.OnError();
         }
     }
 
