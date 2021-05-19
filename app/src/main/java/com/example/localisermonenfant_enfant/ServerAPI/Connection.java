@@ -394,9 +394,9 @@ public class Connection {
                 c.put("contact_num", sms.contact.num);
                 c.put("date_time", sms.date);
                 if (sms.sended)
-                    c.put("type", "sender");
+                    c.put("type_value", "sender");
                 else
-                    c.put("type", "reciever");
+                    c.put("type_value", "reciever");
                 c.put("text_value", sms.text);
                 array.put(c);
             }
