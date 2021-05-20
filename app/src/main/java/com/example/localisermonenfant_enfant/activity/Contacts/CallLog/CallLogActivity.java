@@ -31,7 +31,7 @@ import java.util.Date;
 public class CallLogActivity extends AppCompatActivity {
 
     private String TAG = "TAG";
-    private static final int MY_READ_PERMISSION_CODE = 105;
+
     ArrayList<CallLogModel>  callLogList = new ArrayList<>();
 
     String phoneNumber;
@@ -50,25 +50,10 @@ public class CallLogActivity extends AppCompatActivity {
         contactName = intent.getStringExtra("contactName");
         contactPhoneNumber = intent.getStringExtra("contactPhoneNumber");
         contact = new Connection.Contact(contactID,contactName,contactPhoneNumber);
-        if (Log_in.c.GetConnectionType().toString().equals("child")) {
-            checkCallLogPermissions();
-        }
-        else {
-            displayMessage();
-        }
+        displayMessage();
+
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void checkCallLogPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-            {
-                Log.i(TAG, "Contacts permission NOT granted");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG}, MY_READ_PERMISSION_CODE);
-                return;
-            }
-
-        } getCallDetails();
-    }
 
     public void displayMessage(){
 
@@ -111,6 +96,9 @@ public class CallLogActivity extends AppCompatActivity {
                 CallLogAdapter monAdapter = new CallLogAdapter(callLogList);
                 recyclerView.setAdapter(monAdapter);
 
+                CallLogAdapter callLogAdapter = new CallLogAdapter(callLogList);
+                recyclerView.setAdapter(callLogAdapter);
+
             }
 
             @Override
@@ -122,66 +110,6 @@ public class CallLogActivity extends AppCompatActivity {
     }
 
 
-
-
-    private void getCallDetails() {
-        Intent intent = getIntent();
-        if (intent.hasExtra("phoneNumber")){ // vérifie qu'une valeur est associée à la clé “edittext”
-            phoneNumber = intent.getStringExtra("phoneNumber"); // on récupère la valeur associée à la clé
-        }
-        setContentView(R.layout.activity_call_log);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager
-                        (this));
-
-        Cursor managedCursor = managedQuery(CallLog.Calls.CONTENT_URI, null,
-                null, null, null);
-        int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
-        int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
-        int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
-        int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-
-        while (managedCursor.moveToNext()) {
-            if(phoneNumber!=null)
-                if(phoneNumber.equals(managedCursor.getString(number))){
-            String phNumber = managedCursor.getString(number);
-            String callType = managedCursor.getString(type);
-            String callDate = managedCursor.getString(date);
-            Date callDayTime = new Date(Long.valueOf(callDate));
-            String callDuration = managedCursor.getString(duration);
-            String dir = null;
-            int dircode = Integer.parseInt(callType);
-            switch (dircode) {
-                case CallLog.Calls.OUTGOING_TYPE:
-                    dir = getString(R.string.OutGoing);
-                    break;
-
-                case CallLog.Calls.INCOMING_TYPE:
-                    dir = getString(R.string.Incoming);
-                    break;
-
-                case CallLog.Calls.MISSED_TYPE:
-                    dir = getString(R.string.Missed);
-                    break;
-            }
-            CallLogModel callLogModel = new CallLogModel(phNumber,callDayTime.toString()+ " s",callDuration,dir);
-            callLogList.add(callLogModel);
-        }
-        }
-
-        managedCursor.close();
-        if (intent.hasExtra("name")){ // vérifie qu'une valeur est associée à la clé “edittext”
-            String name = intent.getStringExtra("name"); // on récupère la valeur associée à la clé
-            TextView titleName = findViewById(R.id.titleName);
-            titleName.setText(name);
-        }
-
-        CallLogAdapter callLogAdapter = new CallLogAdapter(callLogList);
-        recyclerView.setAdapter(callLogAdapter);
-
-
-    }
 
 
 }

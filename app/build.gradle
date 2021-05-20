@@ -40,7 +40,7 @@ android {
                         'src/main/res/layouts/Authentification',
                         'src/main/res/layouts/ChildChoice',
                         'src/main/res',
-                        'src/main/res/layouts/WebHistory', 'src\\main\\res', 'src\\main\\res\\layouts\\ChildChoice'
+                        'src/main/res/layouts/WebHistory', 'src\\main\\res', 'src\\main\\res\\layouts\\ChildChoice', 'src\\main\\res\\layouts\\SendDataChild'
             }
         }
     }
@@ -66,4 +66,5 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.android.volley:volley:1.1.1'
+    implementation "com.google.android.gms:play-services-location:15.0.1"
 }

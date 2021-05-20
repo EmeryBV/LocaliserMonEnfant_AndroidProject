@@ -33,15 +33,15 @@ import java.util.HashMap;
 
 public class SmsActivity extends AppCompatActivity {
     private String TAG = "TAG";
-    int REQUEST_PHONE_CALL = 1237;
-    ArrayList<Sms> listSms = new ArrayList<>();
-    HashMap<String , String > HM_phone_name = new HashMap<>();
-    String phoneNumber = "  ";
+
+    public static ArrayList<Sms> listSms = new ArrayList<>();
+    static HashMap<String , String > HM_phone_name = new HashMap<>();
+    private String phoneNumberContact="";
 
     private int contactID;
     private String contactName;
-    private String contactPhoneNumber;
-    private Connection.Contact contact;
+    private String phoneNumber;
+    public static Connection.Contact contact;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -51,51 +51,14 @@ public class SmsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         contactID = Integer.parseInt(intent.getStringExtra("contactID"));
         contactName = intent.getStringExtra("contactName");
-        contactPhoneNumber = intent.getStringExtra("contactPhoneNumber");
-        contact = new Connection.Contact(contactID,contactName,contactPhoneNumber);
+        phoneNumber = intent.getStringExtra("contactPhoneNumber");
+        contact = new Connection.Contact(contactID,contactName,phoneNumber);
 
-//        if (Log_in.c.GetConnectionType().toString().equals("parent")) {
-            checkSMSPermissions();
-            getAllSms(getApplicationContext());
-            ArrayList<Connection.SMS> smsSend = new ArrayList<>();
-            for (Sms sms:listSms) {
-                Connection.Contact contact1 = new Connection.Contact(0,"Baptiste","46489");
-                Connection.SMS sms1 = new Connection.SMS(0,null,contact1,sms.getMessage(),sms.getCreatedAt(),
-                        sms.getType().equals("sent") ? true : false);
-                smsSend.add(sms1);
-            }
-        Log.e("DEBUG: ",listSms.toString());
-        Log_in.c.SendSMS(getApplicationContext(), smsSend, new Connection.SendSMSCallback() {
-            @Override
-            public void Success() {
-                Toast.makeText(getApplicationContext(), "Sms envoyés !" , Toast.LENGTH_LONG).show();
-                Log.e("DEBUG: ","Sms envoyés !");
-            }
-
-            @Override
-            public void Error() {
-                Toast.makeText(getApplicationContext(), "Erreur lors de l'envoie des SMS" , Toast.LENGTH_LONG).show();
-                Log.e("DEBUG: ","Erreur lors de l'envoie des SMS");
-            }
-        });
-//        }
-//         else {
-//            displayMessage();
-//        }
+        displayMessage();
 
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void checkSMSPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-            {
-                Log.i(TAG, "Contacts permission NOT granted");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_SMS}, REQUEST_PHONE_CALL);
-                return;
-            }
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -106,15 +69,19 @@ public class SmsActivity extends AppCompatActivity {
     }
 
     public void displayMessage(){
-
+        Intent intent = getIntent();
+        phoneNumberContact=  intent.getStringExtra("contactPhoneNumber");
+        listSms = new ArrayList<>();
         Log_in.c.GetSMS(getApplicationContext(), MainMenu.child, contact, new Connection.GetSMSCallback() {
             @Override
             public void Success(ArrayList<Connection.SMS> smsList) {
 //                Toast.makeText(getApplicationContext(), "JE SUIS LA " , Toast.LENGTH_LONG).show();
                 for (Connection.SMS connectionSmsList: smsList) {
-                   Sms sms = new Sms(String.valueOf(connectionSmsList.getID()),connectionSmsList.getText(),
-                           connectionSmsList.getDate(),connectionSmsList.getContact().getName(),connectionSmsList.isSended() ? "sent" : "receive");
-                    listSms.add(sms);
+                    if(phoneNumberContact.equals(connectionSmsList.getContact().getNum())) {
+                        Sms sms = new Sms(String.valueOf(connectionSmsList.getID()), connectionSmsList.getText(),
+                                connectionSmsList.getDate(), connectionSmsList.getContact().getName(), connectionSmsList.isSended() ? "sent" : "receive");
+                        listSms.add(sms);
+                    }
                 }
 
                 setContentView(R.layout.activity_sms);
@@ -139,26 +106,27 @@ public class SmsActivity extends AppCompatActivity {
 
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void getAllSms(Context context) {
+    public static void getAllSms(Context context) {
 //        Toast.makeText(getApplicationContext(), "mon message" +  phoneNumber, Toast.LENGTH_SHORT).show();
         ContentResolver cr = context.getContentResolver();
+        listSms = new ArrayList<>();
         Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
         int totalSMS = 0;
         if (c != null) {
             totalSMS = c.getCount();
             if (c.moveToFirst()) {
                 for (int j = 0; j < totalSMS; j++) {
-                    if(phoneNumber.equals(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS))))
-                    {
+                    if(contact.getNum().equals(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS)))) {
                         Sms sms = new Sms();
                         sms.setId(String.valueOf(j));
                         sms.setCreatedAt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.DATE)));
+
                         sms.setMessage(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY)));
                         if (!HM_phone_name.containsKey(contact.getNum()))
-                            sms.setSender(getContactbyPhoneNumber(getApplicationContext(), contact.getNum()));
+                            sms.setSender(getContactbyPhoneNumber(context, contact.getNum()));
                         else sms.setSender(HM_phone_name.get(contact.getNum()));
 
-                        String type = null;
+                        String type = "";
                         switch (Integer.parseInt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE)))) {
                             case Telephony.Sms.MESSAGE_TYPE_INBOX:
                                 type = "receive";
@@ -180,11 +148,11 @@ public class SmsActivity extends AppCompatActivity {
             c.close();
 
         } else {
-            Toast.makeText(this, "No message to show!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "No message to show!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public String getContactbyPhoneNumber(Context c, String phoneNumber) {
+    public static String getContactbyPhoneNumber(Context c, String phoneNumber) {
 
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
         String[] projection = {ContactsContract.PhoneLookup.DISPLAY_NAME};

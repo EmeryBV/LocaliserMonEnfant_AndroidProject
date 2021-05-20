@@ -14,11 +14,16 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
+import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,7 +43,8 @@ public class googleMapFragment extends Fragment implements LocationListener {
     private SupportMapFragment mapFragment;
     private GoogleMap googleMap;
     private Marker positionChild;
-
+    private double lo = 0;
+    private double la = 0;
 
 
 
@@ -50,6 +56,21 @@ public class googleMapFragment extends Fragment implements LocationListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log_in.c.GetGPS(getContext(), MainMenu.child, new Connection.GetGPSCallback() {
+            @Override
+            public void OnSuccess(double lat, double lon) {
+                lo = lon;
+                la = lat;
+                checkPermission();
+                Log.e("lo",String.valueOf(lo));
+                Log.e("la",String.valueOf(la));
+            }
+
+            @Override
+            public void OnError() {
+
+            }
+        });
 
     }
 
@@ -66,7 +87,7 @@ public class googleMapFragment extends Fragment implements LocationListener {
     @Override
     public void onResume() {
         super.onResume();
-        checkPermission();
+
 
     }
 
@@ -93,7 +114,6 @@ public class googleMapFragment extends Fragment implements LocationListener {
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0 , this);
         }
         loadMap();
-
     }
 
     @Override
@@ -119,11 +139,12 @@ public class googleMapFragment extends Fragment implements LocationListener {
                 googleMapFragment.this.googleMap = googleMap;
                 googleMap.moveCamera(CameraUpdateFactory.zoomBy(15));
                 googleMap.setMyLocationEnabled(true);
-                googleMap.addMarker(new MarkerOptions().position(new LatLng(43.630988, 3.861163))
+                googleMap.addMarker(new MarkerOptions().position(new LatLng(la, lo))
 
                         .title("Billy Position"));
                 positionChild = googleMap.addMarker(new MarkerOptions().position(new LatLng(43.630988, 3.861163)));
-
+                LatLng googleLocation = new LatLng(la, lo);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(googleLocation));
 //                Marker marker = googleMap.addMarker(new MarkerOptions().position(new LatLng(43.630988, 3.861163)));
 //                animateMarker(marker,new LatLng(43.630988, 3.861163), false);
             }
@@ -137,12 +158,15 @@ public class googleMapFragment extends Fragment implements LocationListener {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
 
-//        Toast.makeText(this, " Location " + latitude + "/" + longitude,Toast.LENGTH_LONG).show();
-        if(googleMap!=null){
+        Toast.makeText(getContext(), " Location " + latitude + "/" + longitude,Toast.LENGTH_LONG).show();
+        if(googleMap!=null && !Log_in.c.GetConnectionType().toString().equals("Parent")){
             LatLng googleLocation = new LatLng(latitude, longitude);
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(googleLocation));
+
         }
     }
+
+
 
 
     @Override

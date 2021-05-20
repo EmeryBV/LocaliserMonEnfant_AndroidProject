@@ -27,6 +27,9 @@ public class MainMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Log.e("childId : ",  String.valueOf(childId));
+        Log.e("childName : " , childName);
+        child = new Connection.Child(childId,childName);
         setContentView(R.layout.activity_main_menu);
         Button media_button = findViewById(R.id.medias);
 
@@ -35,9 +38,7 @@ public class MainMenu extends AppCompatActivity {
            childId = Integer.parseInt(intent.getStringExtra("childId"));
             childName = intent.getStringExtra("childName");
 
-        Log.e("childId : ",  String.valueOf(childId));
-        Log.e("childName : " , childName);
-        child = new Connection.Child(childId,childName);
+
 
         media_button.setOnClickListener(new View.OnClickListener() {
             @Override
