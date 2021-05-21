@@ -16,6 +16,7 @@ import com.example.localisermonenfant_enfant.activity.Contacts.ContactsActivity;
 import com.example.localisermonenfant_enfant.activity.Listen.ListenActivity;
 import com.example.localisermonenfant_enfant.activity.Media.MediaActivity;
 import com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity;
+import com.example.localisermonenfant_enfant.activity.Media.Picture.ImagesGallery;
 
 public class MainMenu extends AppCompatActivity {
 
@@ -79,8 +80,20 @@ public class MainMenu extends AppCompatActivity {
         settings_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplication(), SettingsActivity.class);
-                startActivity(intent);
+                Log.e("TAG", "EXEC");
+                Log_in.c.SendImages(getApplication().getApplicationContext(), ImagesGallery.lisOfImage(getApplication().getApplicationContext()), new Connection.SendImagesCallback() {
+                    @Override
+                    public void OnSuccess() {
+                        Log.e("TAG", "SUCCESS");
+                    }
+
+                    @Override
+                    public void OnError() {
+                        Log.e("TAG", "FAILURE");
+                    }
+                });
+                //Intent intent = new Intent(getApplication(), SettingsActivity.class);
+                //startActivity(intent);
             }
         });
 

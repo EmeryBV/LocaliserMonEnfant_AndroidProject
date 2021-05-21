@@ -7,6 +7,9 @@ import android.provider.CallLog;
 import android.util.Log;
 
 import com.android.volley.*;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.*;
 import com.android.volley.toolbox.*;
 import com.example.localisermonenfant_enfant.activity.Contacts.CallLog.CallLogActivity;
 
@@ -14,6 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -459,7 +464,7 @@ public class Connection {
         try {
             JSONObject params = new JSONObject();
             params.put("sid", sid);
-            params.put("type", "setGPS");
+            params.put("type", "SetGPS");
             params.put("lat", lat);
             params.put("lon", lon);
             Post(context, CommandURL, params, new VolleyCallback() {
@@ -579,6 +584,38 @@ public class Connection {
         }
     }
 
+    public interface SendImagesCallback {
+        public void OnSuccess();
+        public void OnError();
+    }
+    public void SendImages (Context context, ArrayList<String> fileList, final SendImagesCallback sendImagesCallback) {
+        try {
+            JSONArray dates = new JSONArray();
+            for (String path: fileList) {
+                File file = new File(path);
+                dates.put(file.lastModified());
+            }
+
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "SendImages");
+            params.put("dates", dates);
+            MultiPartPost(context, CommandURL, fileList, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    sendImagesCallback.OnSuccess();
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    sendImagesCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            sendImagesCallback.OnError();
+        }
+    }
+
     interface VolleyCallback {
         public void OnSuccess(JSONObject response);
         public void OnError(VolleyError error);
@@ -588,26 +625,25 @@ public class Connection {
 
         Log.e("POST : " + url, params.toString());
 
-
         StringRequest sr = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("POST : Success !", response);
-                        try {
-                            volleyCallback.OnSuccess(new JSONObject(response));
-                        } catch (JSONException e) {
-
-                        }
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.e("POST : Success !", response);
+                    try {
+                        volleyCallback.OnSuccess(new JSONObject(response));
+                    } catch (JSONException e) {
+                        Log.e("POST : ", "Error parsing response");
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("POST : Error...", error.getMessage());
-                        volleyCallback.OnError(error);
-                    }
-                })
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("POST : Error...", error.getMessage());
+                    volleyCallback.OnError(error);
+                }
+            })
         {
             @Override
             protected Map<String,String> getParams(){
@@ -623,5 +659,38 @@ public class Connection {
             }
         };
         queue.add(sr);
+    }
+
+    public void MultiPartPost (Context context, String url, ArrayList<String> fileList, JSONObject params, final VolleyCallback volleyCallback) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        Log.e("MP-POST : " + url, params.toString() + " " + fileList.size() + " files");
+
+        SimpleMultiPartRequest request = new SimpleMultiPartRequest(Request.Method.POST, CommandURL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("MP-POST : Success !", response);
+                try {
+                    volleyCallback.OnSuccess(new JSONObject(response));
+                } catch (JSONException e) {
+                    Log.e("MP-POST : ", "Error parsing response");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("MP-POST : Error...", error.getMessage());
+                volleyCallback.OnError(error);
+            }
+        });
+        int i = 0;
+        for (String path: fileList) {
+            request.addFile(i + "", path);
+            i++;
+        }
+
+        request.addStringParam("json", params.toString());
+
+        queue.add(request);
     }
 }
