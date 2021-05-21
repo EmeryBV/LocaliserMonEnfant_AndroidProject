@@ -48,7 +48,7 @@ public class PictureActivity extends AppCompatActivity {
     private void loadImages() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        images = ImagesGallery.lisOfImage(this);
+        images = ImagesGallery.listOfImage(this);
         pictureAdapter = new PictureAdapter(this, images, new PictureAdapter.PhotoListener() {
             @Override
             public void onPhotoClick(String path) {

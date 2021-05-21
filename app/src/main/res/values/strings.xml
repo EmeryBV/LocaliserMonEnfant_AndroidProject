@@ -40,5 +40,13 @@
     <string name="Error_signIn">Erreur: Merci de rentrer un nom d\'utilisateur et un mot de passe correct</string>
     <string name="StartSaveVoice">Démarrer l\'enregistrement audio</string>
     <string name="EndSaveVoice">Stopper l\'enregistrement audio</string>
+    <string name="Add_area">Ajouter une zone</string>
+    <string name="mode_add_area">Mode ajout de zone</string>
+    <string name="Confirmer">Valider</string>
+    <string name="Red_area">Zone rouge</string>
+    <string name="Orange_area">Zone Orange</string>
+    <string name="Green_Area">Zone Vert</string>
+    <string name="choose_zone">Merci de selectionner un type de zone</string>
+    <string name="Time_for_area">Merci de selectionner le creneau pour cette zone</string>
 
 </resources>

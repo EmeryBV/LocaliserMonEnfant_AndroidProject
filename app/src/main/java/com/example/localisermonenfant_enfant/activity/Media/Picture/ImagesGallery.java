@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class ImagesGallery {
 
-    public static ArrayList<String> lisOfImage(Context context){
+    public static ArrayList<String> listOfImage(Context context){
         Uri uri;
         Cursor cursor;
         int column_index_data, column_index_folder_name;

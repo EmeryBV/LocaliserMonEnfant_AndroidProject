@@ -39,4 +39,12 @@
     <string name="Error_signIn">Error: Please enter a correct username and password</string>
     <string name="StartSaveVoice">Please click on the button to start the recording</string>
     <string name="EndSaveVoice">Please click on the button to stop the recording</string>
+    <string name="Add_area">Add area</string>
+    <string name="mode_add_area">mode add area</string>
+    <string name="Confirmer">Confirme</string>
+    <string name="Red_area">Red area</string>
+    <string name="Orange_area">Orange area</string>
+    <string name="Green_Area">Green aera</string>
+    <string name="choose_zone">Thanks to select a type of area</string>
+    <string name="Time_for_area">Thanks to select the time for this area</string>
 </resources>

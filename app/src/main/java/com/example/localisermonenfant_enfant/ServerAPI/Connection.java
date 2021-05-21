@@ -383,6 +383,7 @@ public class Connection {
         void Error();
     }
     public void SendSMS (Context context, ArrayList<SMS> SMSs, final SendSMSCallback sendSMSCallback) {
+        if(!SMSs.isEmpty()){
         try {
             JSONObject params = new JSONObject();
             params.put("sid", sid);
@@ -414,6 +415,7 @@ public class Connection {
             });
         } catch (JSONException e) {
             sendSMSCallback.Error();
+        }
         }
     }
 
@@ -459,7 +461,7 @@ public class Connection {
         try {
             JSONObject params = new JSONObject();
             params.put("sid", sid);
-            params.put("type", "setGPS");
+            params.put("type", "SetGPS");
             params.put("lat", lat);
             params.put("lon", lon);
             Post(context, CommandURL, params, new VolleyCallback() {
@@ -604,7 +606,7 @@ public class Connection {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("POST : Error...", error.getMessage());
+//                        Log.e("POST : Error...", error.getMessage());
                         volleyCallback.OnError(error);
                     }
                 })
