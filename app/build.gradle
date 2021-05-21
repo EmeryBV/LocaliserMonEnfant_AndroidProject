@@ -14,7 +14,11 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildscript {
+        repositories {
+            jcenter()
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -66,6 +70,7 @@ dependencies {
     implementation 'com.sendbird.sdk:sendbird-android-sdk:3.0.160'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.android.volley:volley:1.1.1'
+    //implementation 'com.android.volley:volley:1.1.1'
     implementation "com.google.android.gms:play-services-location:15.0.1"
+    implementation 'dev.dworks.libs:volleyplus:+'
 }
