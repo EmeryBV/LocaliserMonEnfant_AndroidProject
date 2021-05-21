@@ -12,6 +12,7 @@ import com.android.volley.error.VolleyError;
 import com.android.volley.request.*;
 import com.android.volley.toolbox.*;
 import com.example.localisermonenfant_enfant.activity.Contacts.CallLog.CallLogActivity;
+import com.sendbird.android.shadow.com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -144,6 +145,17 @@ public class Connection {
         public int getType () {return type;}
         String duration;
         public String getDuration () {return duration;}
+    }
+
+    public class Media {
+        int id;
+        public int getId () {return id;}
+        Long date;
+        public Long getDate () {return date;}
+        String name;
+        public String getName () {return name;}
+        String link;
+        public String getLink () {return link;}
     }
 
     public enum ConnectionType {Child, Parent};
@@ -616,6 +628,49 @@ public class Connection {
         }
     }
 
+    public interface GetImagesCallback {
+        public void OnSuccess (ArrayList<Media> imageList);
+        public void OnError ();
+    }
+    public void GetImages (Context context, Child child, final GetImagesCallback getImagesCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "GetImages");
+            params.put("IdChild", child.id);
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    try {
+                        ArrayList<Media> imageList = new ArrayList<Media>();
+
+                        JSONArray imageArray = response.getJSONArray("images");
+                        for (int i = 0; i < imageArray.length(); i++) {
+                            Media image = new Media();
+                            JSONObject jo = (JSONObject)imageArray.get(i);
+                            image.id = jo.getInt("id");
+                            image.date = jo.getLong("date_time");
+                            image.name = jo.getString("name");
+                            image.link = jo.getString("link");
+                            imageList.add(image);
+                        }
+
+                        getImagesCallback.OnSuccess(imageList);
+                    } catch (JSONException e) {
+                        getImagesCallback.OnError();
+                    }
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    getImagesCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            getImagesCallback.OnError();
+        }
+    }
+
     interface VolleyCallback {
         public void OnSuccess(JSONObject response);
         public void OnError(VolleyError error);
@@ -633,6 +688,7 @@ public class Connection {
                     try {
                         volleyCallback.OnSuccess(new JSONObject(response));
                     } catch (JSONException e) {
+                        volleyCallback.OnSuccess(null);
                         Log.e("POST : ", "Error parsing response");
                     }
                 }
@@ -673,6 +729,7 @@ public class Connection {
                 try {
                     volleyCallback.OnSuccess(new JSONObject(response));
                 } catch (JSONException e) {
+                    volleyCallback.OnSuccess(null);
                     Log.e("MP-POST : ", "Error parsing response");
                 }
             }
