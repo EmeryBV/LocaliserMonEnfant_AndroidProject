@@ -651,7 +651,7 @@ public class Connection {
                             image.id = jo.getInt("id");
                             image.date = jo.getLong("date_time");
                             image.name = jo.getString("name");
-                            image.link = jo.getString("link");
+                            image.link = "https://www.lme.romimap.com/" + jo.getString("link");
                             imageList.add(image);
                         }
 
