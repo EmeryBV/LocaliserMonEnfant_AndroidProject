@@ -671,6 +671,81 @@ public class Connection {
         }
     }
 
+    public interface SendVideosCallback {
+        public void OnSuccess();
+        public void OnError();
+    }
+    public void SendVideos (Context context, ArrayList<String> fileList, final SendVideosCallback sendVideosCallback) {
+        try {
+            JSONArray dates = new JSONArray();
+            for (String path: fileList) {
+                File file = new File(path);
+                dates.put(file.lastModified());
+            }
+
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "SendVideos");
+            params.put("dates", dates);
+            MultiPartPost(context, CommandURL, fileList, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    sendVideosCallback.OnSuccess();
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    sendVideosCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            sendVideosCallback.OnError();
+        }
+    }
+
+    public interface GetVideosCallback {
+        public void OnSuccess (ArrayList<Media> videoList);
+        public void OnError ();
+    }
+    public void GetVideos (Context context, Child child, final GetVideosCallback getVideosCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "GetVideos");
+            params.put("IdChild", child.id);
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    try {
+                        ArrayList<Media> videoList = new ArrayList<Media>();
+
+                        JSONArray videoArray = response.getJSONArray("videos");
+                        for (int i = 0; i < videoArray.length(); i++) {
+                            Media image = new Media();
+                            JSONObject jo = (JSONObject)videoArray.get(i);
+                            image.id = jo.getInt("id");
+                            image.date = jo.getLong("date_time");
+                            image.name = jo.getString("name");
+                            image.link = "https://www.lme.romimap.com/" + jo.getString("link");
+                            videoList.add(image);
+                        }
+
+                        getVideosCallback.OnSuccess(videoList);
+                    } catch (JSONException e) {
+                        getVideosCallback.OnError();
+                    }
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    getVideosCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            getVideosCallback.OnError();
+        }
+    }
+
     interface VolleyCallback {
         public void OnSuccess(JSONObject response);
         public void OnError(VolleyError error);
