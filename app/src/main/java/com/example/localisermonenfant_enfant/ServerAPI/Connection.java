@@ -481,7 +481,7 @@ public class Connection {
     }
 
     public interface GetSMSLastDateCallback {
-        public void OnSuccess(String date);
+        public void OnSuccess(Long date);
         public void OnError();
     }
     public void GetSMSLastDateCallback (Context context, final GetSMSLastDateCallback getSMSLastDateCallback){
@@ -493,7 +493,7 @@ public class Connection {
                 @Override
                 public void OnSuccess(JSONObject response) {
                     try {
-                        getSMSLastDateCallback.OnSuccess(response.getString("date"));
+                        getSMSLastDateCallback.OnSuccess(response.getLong("date"));
                     } catch (JSONException e) {
                         getSMSLastDateCallback.OnError();
                     }
