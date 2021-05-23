@@ -735,7 +735,7 @@ public class Connection {
         public void OnSuccess();
         public void OnError();
     }
-    public void SignUp (Context context, String email, String username, String pass, boolean isChild, final SignUpCallback signUpCallback) {
+    public static void SignUp (Context context, String email, String username, String pass, boolean isChild, final SignUpCallback signUpCallback) {
         try {
             JSONObject params = new JSONObject();
             params.put("type", "SignUp");
@@ -772,7 +772,7 @@ public class Connection {
         public void OnSuccess(JSONObject response);
         public void OnError(VolleyError error);
     }
-    private void Post (Context context, String url, final JSONObject params, final VolleyCallback volleyCallback) {
+    private static void Post (Context context, String url, final JSONObject params, final VolleyCallback volleyCallback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
         Log.e("POST : " + url, params.toString());
@@ -814,7 +814,7 @@ public class Connection {
         queue.add(sr);
     }
 
-    public void MultiPartPost (Context context, String url, ArrayList<String> fileList, JSONObject params, final VolleyCallback volleyCallback) {
+    private static void MultiPartPost (Context context, String url, ArrayList<String> fileList, JSONObject params, final VolleyCallback volleyCallback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
         Log.e("MP-POST : " + url, params.toString() + " " + fileList.size() + " files");
