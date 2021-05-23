@@ -49,6 +49,7 @@ public class MapActivity extends AppCompatActivity {
         timeStart.setIs24HourView(true); // 24H Mode.
         timeEnd.setIs24HourView(true); // 24H Mode.
 
+
         add_area.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override

@@ -8,6 +8,15 @@ public class VideoModel  {
     String videoDuration;
     Uri videoUri;
 
+    public VideoModel() {
+    }
+
+    public VideoModel(String videoTitle, String videoDuration, Uri videoUri) {
+        this.videoTitle = videoTitle;
+        this.videoDuration = videoDuration;
+        this.videoUri = videoUri;
+    }
+
     public String getVideoTitle() {
         return videoTitle;
     }

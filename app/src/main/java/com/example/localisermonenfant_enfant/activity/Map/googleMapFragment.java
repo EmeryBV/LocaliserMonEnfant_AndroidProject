@@ -22,9 +22,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +38,7 @@ import com.example.localisermonenfant_enfant.R;
 import com.example.localisermonenfant_enfant.ServerAPI.Connection;
 import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
 import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
+import com.example.localisermonenfant_enfant.activity.MainMenu.SettingsActivity;
 import com.example.localisermonenfant_enfant.activity.SendDataChild.SendDataChildActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -50,10 +54,13 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static com.example.localisermonenfant_enfant.activity.MainMenu.SettingsActivity.notificationType;
 
 
 public class googleMapFragment extends Fragment implements LocationListener {
@@ -206,53 +213,79 @@ public class googleMapFragment extends Fragment implements LocationListener {
                         polygon.setStrokeColor(areaMap.getColor());
                         polygon.setFillColor(areaMap.getColor());
                     }
-                    boolean contains = PolyUtil.containsLocation(lastPosition, areaMap.getLatLng(),true);
-                    if((areaMap.getColor() == 0x7FFF7F00 ||areaMap.getColor() == 0x7FFF2B00) && contains ){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setCancelable(true);
-                        builder.setTitle("Alerte");
-                        builder.setMessage(MainMenu.child.getName() + " is in " + (areaMap.getColor()==0x7FFF2B00?"red" :"orange ")  + " area!" );
-                        builder.setPositiveButton("Oui",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                    boolean contains = PolyUtil.containsLocation(lastPosition, areaMap.getLatLng(), true);
+
+                    Calendar rightNow = Calendar.getInstance();
+                    int hours = rightNow.get(Calendar.HOUR_OF_DAY); // return the hour in 24 hrs format (ranging from 0-23)
+                    int minutes = rightNow.get(Calendar.MINUTE);
+                    Time currentTime = new Time(hours, minutes, 00);
+                    Time limitTimeStart = new Time(areaMap.getHoursStart(), areaMap.getMinuteStart(), 00);
+                    Time limitTimeEnd = new Time(areaMap.getHoursEnd(), areaMap.getMinutesEnd(), 00);
+                    if (notificationType.equals("Pop up")) {
+                    if ((areaMap.getColor() == 0x7FFF7F00 || areaMap.getColor() == 0x7FFF2B00) && contains && limitTimeStart.before(currentTime) && limitTimeEnd.after(currentTime)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setCancelable(true);
+                            builder.setTitle("Alerte");
+                            builder.setMessage(MainMenu.child.getName() + " is in " + (areaMap.getColor() == 0x7FFF2B00 ? "red" : "orange ") + " area!");
+                            builder.setPositiveButton("Oui",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
 //                                            Log_in.c.Pa
-                                    }
-                                });
-                        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+                                        }
+                                    });
+                            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
 
 
-                        Log.e("DEBUG2 : zone !", "JE SUIS LA");
+                        } else if (areaMap.getColor() == 0x7F00FF00 && !contains && limitTimeStart.before(currentTime) && limitTimeEnd.after(currentTime)) {
 
-
-                    }else if ( areaMap.getColor() == 0x7F00FF00 && contains ){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setCancelable(true);
-                        builder.setTitle("Alerte");
-                        builder.setMessage(MainMenu.child.getName() + " is out of green area!" );
-                        builder.setPositiveButton("Oui",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setCancelable(true);
+                            builder.setTitle("Alerte");
+                            builder.setMessage(MainMenu.child.getName() + " is out of green area!");
+                            builder.setPositiveButton("Oui",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
 //                                            Log_in.c.Pa
-                                    }
-                                });
-                        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+                                        }
+                                    });
+                            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        }
                     }
-                }
+                    else if (notificationType.equals("Vibration")) {
+                            Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                v.vibrate(500);
+                            }
+                        } else {
 
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "Channel ID")
+                                    .setSmallIcon(R.drawable.ic_baseline_warning_24)
+                                    .setContentTitle("Alerte")
+                                    .setContentText(MainMenu.child.getName() + " is in a bad place")
+                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                    .setAutoCancel(true);
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+                            notificationManager.notify(10, builder.build());
+                        }
+
+
+                }
 
 
                 final ArrayList<LatLng> pointsList = new ArrayList<>();

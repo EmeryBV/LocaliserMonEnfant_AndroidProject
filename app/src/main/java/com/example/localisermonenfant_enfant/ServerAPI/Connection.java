@@ -2,7 +2,6 @@
 package com.example.localisermonenfant_enfant.ServerAPI;
 
 import android.content.Context;
-import android.os.Debug;
 import android.provider.CallLog;
 import android.util.Log;
 
@@ -11,20 +10,16 @@ import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.*;
 import com.android.volley.toolbox.*;
-import com.example.localisermonenfant_enfant.activity.Contacts.CallLog.CallLogActivity;
-import com.sendbird.android.shadow.com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class Connection {
     public static String CommandURL = "https://www.lme.romimap.com/commands.php";
@@ -117,19 +112,34 @@ public class Connection {
         public boolean isSended() {return sended;}
     }
 
-    public class CallData {
+    public static class CallData {
+
+        public CallData(int id, Contact contact, Child child, Long date, int type, String duration) {
+            this.id = id;
+            this.contact = contact;
+            this.child = child;
+            this.date = date;
+            this.type = type;
+            this.duration = duration;
+        }
+
         int id;
         public int getId () {return id;}
         Contact contact;
         public Contact getContact () {return contact;}
         Child child;
         public Child getChild () {return child;}
-        Long date;
-        public Long getDate () {return date;}
+        long date;
+        public long getDate () {return date;}
         int type;
         public int getType () {return type;}
         String duration;
         public String getDuration () {return duration;}
+
+        public CallData() {
+        }
+
+
     }
 
     public class Media {
@@ -385,37 +395,39 @@ public class Connection {
         void Error();
     }
     public void SendSMS (Context context, ArrayList<SMS> SMSs, final SendSMSCallback sendSMSCallback) {
-        try {
-            JSONObject params = new JSONObject();
-            params.put("sid", sid);
-            params.put("type", "AddSMS");
-            JSONArray array = new JSONArray();
-            for (SMS sms : SMSs) {
-                JSONObject c = new JSONObject();
-                c.put("contact_name", sms.contact.name);
-                c.put("contact_num", sms.contact.num);
-                c.put("date_time", sms.date);
-                if (sms.sended)
-                    c.put("type_value", "sender");
-                else
-                    c.put("type_value", "reciever");
-                c.put("text_value", sms.text);
-                array.put(c);
-            }
-            params.put("SMS", array);
-            Post(context, CommandURL, params, new VolleyCallback() {
-                @Override
-                public void OnSuccess(JSONObject response) {
-                    sendSMSCallback.Success();
+        if(!SMSs.isEmpty()) {
+            try {
+                JSONObject params = new JSONObject();
+                params.put("sid", sid);
+                params.put("type", "AddSMS");
+                JSONArray array = new JSONArray();
+                for (SMS sms : SMSs) {
+                    JSONObject c = new JSONObject();
+                    c.put("contact_name", sms.contact.name);
+                    c.put("contact_num", sms.contact.num);
+                    c.put("date_time", sms.date);
+                    if (sms.sended)
+                        c.put("type_value", "sender");
+                    else
+                        c.put("type_value", "reciever");
+                    c.put("text_value", sms.text);
+                    array.put(c);
                 }
+                params.put("SMS", array);
+                Post(context, CommandURL, params, new VolleyCallback() {
+                    @Override
+                    public void OnSuccess(JSONObject response) {
+                        sendSMSCallback.Success();
+                    }
 
-                @Override
-                public void OnError(VolleyError error) {
-                    sendSMSCallback.Error();
-                }
-            });
-        } catch (JSONException e) {
-            sendSMSCallback.Error();
+                    @Override
+                    public void OnError(VolleyError error) {
+                        sendSMSCallback.Error();
+                    }
+                });
+            } catch (JSONException e) {
+                sendSMSCallback.Error();
+            }
         }
     }
 
@@ -424,35 +436,38 @@ public class Connection {
         public void OnError();
     }
     public void SendCallData (Context context, ArrayList<CallData> callDataList, final SendCallDataCallback sendCallDataCallback) {
-        try {
-            JSONObject params = new JSONObject();
-            params.put("sid", sid);
-            params.put("type", "AddCalls");
-            JSONArray array = new JSONArray();
-            for (CallData call : callDataList) {
-                JSONObject c = new JSONObject();
-                c.put("contact_name", call.contact.name);
-                c.put("contact_num", call.contact.num);
-                c.put("date_time", call.date);
-                c.put("type_value", call.type);
-                array.put(c);
-            }
-            params.put("calls", array);
-            Post(context, CommandURL, params, new VolleyCallback() {
-                @Override
-                public void OnSuccess(JSONObject response) {
-                    sendCallDataCallback.OnSuccess();
+        if(!callDataList.isEmpty()) {
+            try {
+                JSONObject params = new JSONObject();
+                params.put("sid", sid);
+                params.put("type", "AddCalls");
+                JSONArray array = new JSONArray();
+                for (CallData call : callDataList) {
+                    JSONObject c = new JSONObject();
+                    c.put("contact_name", call.contact.name);
+                    c.put("contact_num", call.contact.num);
+                    c.put("date_time", call.date);
+                    c.put("type_value", call.type);
+                    array.put(c);
                 }
+                params.put("calls", array);
+                Post(context, CommandURL, params, new VolleyCallback() {
+                    @Override
+                    public void OnSuccess(JSONObject response) {
+                        sendCallDataCallback.OnSuccess();
+                    }
 
-                @Override
-                public void OnError(VolleyError error) {
-                    sendCallDataCallback.OnError();
-                }
-            });
-        } catch (JSONException e) {
-            sendCallDataCallback.OnError();
+                    @Override
+                    public void OnError(VolleyError error) {
+                        sendCallDataCallback.OnError();
+                    }
+                });
+            } catch (JSONException e) {
+                sendCallDataCallback.OnError();
+            }
         }
     }
+
 
     public interface GetGPSCallback {
         public void OnSuccess(double lat, double lon);
@@ -724,7 +739,7 @@ public class Connection {
     }
 
     public interface GetVideosCallback {
-        public void OnSuccess (ArrayList<Media> videoList);
+        public void OnSuccess (ArrayList<Media> videoList) throws URISyntaxException;
         public void OnError ();
     }
     public void GetVideos (Context context, Child child, final GetVideosCallback getVideosCallback) {
@@ -751,7 +766,7 @@ public class Connection {
                         }
 
                         getVideosCallback.OnSuccess(videoList);
-                    } catch (JSONException e) {
+                    } catch (JSONException | URISyntaxException e) {
                         getVideosCallback.OnError();
                     }
                 }

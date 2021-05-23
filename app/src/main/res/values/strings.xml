@@ -48,5 +48,7 @@
     <string name="Green_Area">Zone Vert</string>
     <string name="choose_zone">Merci de selectionner un type de zone</string>
     <string name="Time_for_area">Merci de selectionner le creneau pour cette zone</string>
+    <string name="AddChildTv">Merci d\'ajouter au moins 1 enfant pour continuer</string>
+    <string name="notification_type">Type d\'alerte</string>
 
 </resources>

@@ -10,17 +10,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
+import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PictureActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     PictureAdapter pictureAdapter;
-    List<String> images;
     TextView picture_number;
 
     private static final int MY_READ_PERMISSION_CODE = 101;
@@ -33,22 +37,31 @@ public class PictureActivity extends AppCompatActivity {
         picture_number = findViewById(R.id.pictureNumber);
         recyclerView = findViewById(R.id.recycler_view);
 
-        //Check from permission
-        if (ContextCompat.checkSelfPermission(PictureActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        Log_in.c.GetImages(getApplicationContext(), MainMenu.child, new Connection.GetImagesCallback() {
+            @Override
+            public void OnSuccess(ArrayList<Connection.Media> imageList) {
+                ArrayList<String> imageURLs = new ArrayList<>();
+                for (Connection.Media image: imageList) {
+                    imageURLs.add(image.getLink());
+                }
 
-            ActivityCompat.requestPermissions(PictureActivity.this, new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE}, MY_READ_PERMISSION_CODE);
-        } else {
-            loadImages();
+                loadImages(imageURLs);
+                Log.e("Debug", "Image Récupéré !  ");
 
-        }
+            }
+
+            @Override
+            public void OnError() {
+                Log.e("Debug", "Erreur lors de la récupération des images !  ");
+            }
+        });
 
     }
 
-    private void loadImages() {
+    private void loadImages(ArrayList images) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        images = ImagesGallery.listOfImage(this);
+
         pictureAdapter = new PictureAdapter(this, images, new PictureAdapter.PhotoListener() {
             @Override
             public void onPhotoClick(String path) {
@@ -61,17 +74,5 @@ public class PictureActivity extends AppCompatActivity {
         picture_number.setText("Photos ( " + images.size() + ")");
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == MY_READ_PERMISSION_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Read external storage permission granted", Toast.LENGTH_SHORT).show();
-                loadImages();
-            } else {
-                Toast.makeText(this, "Read external storage permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 }

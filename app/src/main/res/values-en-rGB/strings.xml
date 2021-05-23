@@ -47,4 +47,6 @@
     <string name="Green_Area">Green aera</string>
     <string name="choose_zone">Thanks to select a type of area</string>
     <string name="Time_for_area">Thanks to select the time for this area</string>
+    <string name="AddChildTv">Thanks to add at least 1 child</string>
+    <string name="notification_type">Alerte Type</string>
 </resources>

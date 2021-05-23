@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CpuUsageInfo;
 import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.util.Log;
@@ -29,6 +31,7 @@ import com.example.localisermonenfant_enfant.activity.Contacts.Contacts;
 import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class SmsActivity extends AppCompatActivity {
@@ -55,17 +58,13 @@ public class SmsActivity extends AppCompatActivity {
         contact = new Connection.Contact(contactID,contactName,phoneNumber);
 
         displayMessage();
-
     }
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onResume() {
         super.onResume();
-
-
     }
 
     public void displayMessage(){
@@ -73,13 +72,16 @@ public class SmsActivity extends AppCompatActivity {
         phoneNumberContact=  intent.getStringExtra("contactPhoneNumber");
         listSms = new ArrayList<>();
         Log_in.c.GetSMS(getApplicationContext(), MainMenu.child, contact, new Connection.GetSMSCallback() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void Success(ArrayList<Connection.SMS> smsList) {
 //                Toast.makeText(getApplicationContext(), "JE SUIS LA " , Toast.LENGTH_LONG).show();
                 for (Connection.SMS connectionSmsList: smsList) {
                     if(phoneNumberContact.equals(connectionSmsList.getContact().getNum())) {
+                        String dateString = new SimpleDateFormat("HH:mm-dd/MM/yyyy").format(new Date(connectionSmsList.getDate()));
                         Sms sms = new Sms(String.valueOf(connectionSmsList.getID()), connectionSmsList.getText(),
-                                connectionSmsList.getDate(), connectionSmsList.getContact().getName(), connectionSmsList.isSended() ? "sent" : "receive");
+                                dateString, connectionSmsList.getContact().getName(), connectionSmsList.isSended() ? "sent" : "receive");
+
                         listSms.add(sms);
                     }
                 }
@@ -111,6 +113,7 @@ public class SmsActivity extends AppCompatActivity {
         ContentResolver cr = context.getContentResolver();
         listSms = new ArrayList<>();
         Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
+
         int totalSMS = 0;
         if (c != null) {
             totalSMS = c.getCount();

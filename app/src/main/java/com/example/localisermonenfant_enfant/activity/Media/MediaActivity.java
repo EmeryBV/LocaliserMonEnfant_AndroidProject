@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.localisermonenfant_enfant.R;
-import com.example.localisermonenfant_enfant.activity.Media.Documents.DocumentsActivity;
 import com.example.localisermonenfant_enfant.activity.Media.Picture.PictureActivity;
 
 import com.example.localisermonenfant_enfant.activity.Media.Video.VideoListActivity;

@@ -1,14 +1,19 @@
 package com.example.localisermonenfant_enfant.activity.Contacts.SMS;
 
+import android.icu.text.SimpleDateFormat;
+import android.os.Build;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.localisermonenfant_enfant.R;
+
+import java.util.Date;
 
 class ReceivedMessageHolder extends RecyclerView.ViewHolder {
     TextView messageText, timeText, nameText;
@@ -22,11 +27,13 @@ class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         nameText = (TextView) itemView.findViewById(R.id.text_gchat_message_other);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     void bind(Sms message) {
         messageText.setText(message.getSender());
 
         // Format the stored timestamp into a readable String using method.
-        timeText.setText(DateUtils.formatDateTime(itemView.getContext(),0,DateUtils.FORMAT_ABBREV_ALL));
+
+        timeText.setText(message.getCreatedAt());
         nameText.setText(message.getMessage());
 
         // Insert the profile image from the URL into the ImageView.

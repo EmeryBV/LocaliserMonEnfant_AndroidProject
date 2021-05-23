@@ -8,8 +8,12 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import android.net.Uri;
 
@@ -21,6 +25,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
+import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 
 public class VideoListActivity extends AppCompatActivity {
 
@@ -38,15 +45,54 @@ public class VideoListActivity extends AppCompatActivity {
     }
 
     public void videoList() {
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        videoArrayList = new ArrayList<>();
+
         getVideos();
     }
 
     //get video files from storage
     public void getVideos() {
+        Log_in.c.GetVideos(getApplicationContext(), MainMenu.child, new Connection.GetVideosCallback() {
+            @Override
+            public void OnSuccess(ArrayList<Connection.Media> videoList) throws URISyntaxException {
+                ArrayList<VideoModel> mediaList = new ArrayList<>();
+                for (Connection.Media video: videoList) {
+                    URI uri = new URI(video.getLink());
+                    Uri newUri = new Uri.Builder().scheme(uri.getScheme())
+                            .encodedAuthority(uri.getRawAuthority())
+                            .encodedPath(uri.getRawPath())
+                            .query(uri.getRawQuery())
+                            .fragment(uri.getRawFragment())
+                            .build();
+                    VideoModel videoModel = new VideoModel(video.getName(),"60", newUri);
+                    mediaList.add(videoModel);
+                }
+
+                recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+                VideoAdapter  adapter = new VideoAdapter (getApplicationContext(), mediaList);
+                recyclerView.setAdapter(adapter);
+
+                adapter.setOnItemClickListener(new VideoAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int pos, View v) {
+                        Intent intent = new Intent(getApplicationContext(), VideoPlayActivity.class);
+                        intent.putExtra("pos", pos);
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            @Override
+            public void OnError() {
+                Log.e("Debug", "Erreur lors de la récupération des videos !  ");
+            }
+        });
+
+    }
+
+    public void setVideos() {
         ContentResolver contentResolver = getContentResolver();
         Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
 
@@ -68,19 +114,9 @@ public class VideoListActivity extends AppCompatActivity {
             } while (cursor.moveToNext());
         }
 
-        VideoAdapter  adapter = new VideoAdapter (this, videoArrayList);
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemClickListener(new VideoAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int pos, View v) {
-                Intent intent = new Intent(getApplicationContext(), VideoPlayActivity.class);
-                intent.putExtra("pos", pos);
-                startActivity(intent);
-            }
-        });
 
     }
+
 
     //time conversion
     public String timeConversion(long value) {

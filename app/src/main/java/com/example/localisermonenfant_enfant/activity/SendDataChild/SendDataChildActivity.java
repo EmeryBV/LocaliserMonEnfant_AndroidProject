@@ -6,8 +6,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -16,13 +14,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,16 +30,18 @@ import android.widget.Toast;
 
 import com.example.localisermonenfant_enfant.R;
 import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.Service.SendDataService;
 import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
-import com.example.localisermonenfant_enfant.activity.Contacts.CallLog.CallLogAdapter;
 import com.example.localisermonenfant_enfant.activity.Contacts.CallLog.CallLogModel;
 import com.example.localisermonenfant_enfant.activity.Contacts.Contacts;
 import com.example.localisermonenfant_enfant.activity.Contacts.SMS.Sms;
 import com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity;
+import com.example.localisermonenfant_enfant.activity.Media.Picture.ImagesGallery;
+import com.example.localisermonenfant_enfant.activity.Media.Video.VideoModel;
+import com.example.localisermonenfant_enfant.activity.Media.Video.VideosGallery;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,19 +49,24 @@ import java.util.HashMap;
 
 import static com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity.getAllSms;
 
+
 public class SendDataChildActivity extends AppCompatActivity {
     private String TAG = "TAG";
     private static final int PERMS_CONTACT_ID = 1235;
     private static final int MY_READ_PERMISSION_CODE = 105;
+    private static final int MY_MEDIA_PICTURE_CODE = 205;
+    public static final int PERMISSION_VIDEO = 101;
     public static final int PERMS_MAP_ID = 1234;
     private int REQUEST_PHONE_CALL = 1237;
+    public static ArrayList<String> images;
     public static HashMap<Integer, ArrayList<LatLng>> hashMap= new HashMap<>();
     Button addParent;
     LinearLayout linearLayout;
     TextView nameParent;
     private LocationManager lm;
-    public ArrayList<Contacts> contactsArrayList = new ArrayList<>();
-    ArrayList<CallLogModel> callLogList = new ArrayList<>();
+    public static ArrayList<Contacts> contactsArrayList = new ArrayList<>();
+    public static ArrayList<CallLogModel> callLogList = new ArrayList<>();
+    public static ArrayList<String> videoArrayList = new ArrayList<>();
     private FusedLocationProviderClient fusedLocationClient;
 
     @Override
@@ -91,65 +96,46 @@ public class SendDataChildActivity extends AppCompatActivity {
                         }
                     });
                 } else {
+
                     nameParent.setText(parent.getName());
-                    checkContactPermissions();
 
                     checkMapPermission();
-                    if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(),
-                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        Log.i(TAG, "Je suis la : ");
-                        return;
-                    }
+                    checkMediaPermission();
+                    checkContactPermissions();
+                    checkSMSPermissions();
+                    checkCallLogPermissions();
 
-                    fusedLocationClient.getLastLocation()
-                            .addOnSuccessListener(SendDataChildActivity.this, new OnSuccessListener<Location>() {
-                                @Override
-                                public void onSuccess(Location location) {
-                                    ;
-                                    if (location != null) {
-                                        Log_in.c.SetGPS(getApplicationContext(), location.getLongitude(), location.getLatitude(), new Connection.SetGPSCallback() {
-                                            @Override
-                                            public void OnSuccess() {
-                                                Log.e("Debug", "Position de l'enfant envoyé : ");
-                                            }
 
-                                            @Override
-                                            public void OnError() {
-                                                Log.e("Erreur", "Erreur lors de l'envoie de la postion de l'enfant : ");
-                                            }
-                                        });
-                                    }
-                                }
-                            });
+//                    checkMapPermission();
+//                    if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+//                            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(),
+//                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                        return;
+//                    }
+//                    fusedLocationClient.getLastLocation()
+//                            .addOnSuccessListener(SendDataChildActivity.this, new OnSuccessListener<Location>() {
+//                                @Override
+//                                public void onSuccess(Location location) {
+//                                    if (location != null) {
+//                                        Log_in.c.SetGPS(getApplicationContext(), location.getLongitude(), location.getLatitude(), new Connection.SetGPSCallback() {
+//                                            @Override
+//                                            public void OnSuccess() {
+//                                                Log.e("Debug", "Position de l'enfant envoyé : ");
+//                                            }
+//
+//                                            @Override
+//                                            public void OnError() {
+//                                                Log.e("Erreur", "Erreur lors de l'envoie de la postion de l'enfant : ");
+//                                            }
+//                                        });
+//                                    }
+//                                }
+//                            });
 
-                    for (Contacts contact : contactsArrayList) {
-                        SmsActivity.contact = new Connection.Contact(0, contact.getName(), contact.getNumber());
-                        checkSMSPermissions();
 
-                        ArrayList<Connection.SMS> smsSend = new ArrayList<>();
-                        for (Sms sms : SmsActivity.listSms) {
-                            if (sms.getType() != null) {
-                                Connection.SMS sms1 = new Connection.SMS(0, null, SmsActivity.contact, sms.getMessage(), sms.getCreatedAt(),
-                                        sms.getType().equals("sent"));
-                                smsSend.add(sms1);
-                            }
-                        }
 
-                        Log_in.c.SendSMS(getApplicationContext(), smsSend, new Connection.SendSMSCallback() {
-                            @Override
-                            public void Success() {
-                                Toast.makeText(getApplicationContext(), "Sms envoyés !", Toast.LENGTH_LONG).show();
-                            }
-
-                            @Override
-                            public void Error() {
-                                Toast.makeText(getApplicationContext(), "Erreur lors de l'envoie des SMS", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                        checkCallLogPermissions(contact.getName());
-
-                    }
+                    Intent intent = new Intent(SendDataChildActivity.this, SendDataService.class);
+                    startService(intent);
                     linearLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -175,7 +161,7 @@ public class SendDataChildActivity extends AppCompatActivity {
                             dialog.show();
                         }
                     });
-
+//                    stopService(new Intent(SendDataChildActivity.this, SendDataService.class));
                 }
             }
 
@@ -184,9 +170,7 @@ public class SendDataChildActivity extends AppCompatActivity {
 
             }
         });
-
     }
-
 
     private void getContactList() {
         ContentResolver cr = getContentResolver();
@@ -226,47 +210,7 @@ public class SendDataChildActivity extends AppCompatActivity {
         }
     }
 
-    private void getCallDetails(String phoneNumber) {
 
-        callLogList = new ArrayList<>();
-
-        Cursor managedCursor = managedQuery(CallLog.Calls.CONTENT_URI, null,
-                null, null, null);
-        int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
-        int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
-        int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
-        int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-
-        while (managedCursor.moveToNext()) {
-            if (phoneNumber != null)
-                if (phoneNumber.equals(managedCursor.getString(number))) {
-                    String phNumber = managedCursor.getString(number);
-                    String callType = managedCursor.getString(type);
-                    String callDate = managedCursor.getString(date);
-                    Date callDayTime = new Date(Long.valueOf(callDate));
-                    String callDuration = managedCursor.getString(duration);
-                    String dir = null;
-                    int dircode = Integer.parseInt(callType);
-                    switch (dircode) {
-                        case CallLog.Calls.OUTGOING_TYPE:
-                            dir = getString(R.string.OutGoing);
-                            break;
-
-                        case CallLog.Calls.INCOMING_TYPE:
-                            dir = getString(R.string.Incoming);
-                            break;
-
-                        case CallLog.Calls.MISSED_TYPE:
-                            dir = getString(R.string.Missed);
-                            break;
-                    }
-                    CallLogModel callLogModel = new CallLogModel(phNumber, callDayTime.toString() + " s", callDuration, dir);
-                    callLogList.add(callLogModel);
-                }
-        }
-
-        managedCursor.close();
-    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -278,22 +222,31 @@ public class SendDataChildActivity extends AppCompatActivity {
                 return;
             }
         }
-        getAllSms(getApplicationContext());
     }
 
 
     private void checkContactPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            {
+
                 Log.i(TAG, "Contacts permission NOT granted");
                 ActivityCompat.requestPermissions(this, new String[]{
                         Manifest.permission.READ_CONTACTS,
                 }, PERMS_CONTACT_ID);
                 return;
-            }
         }
         getContactList();
     }
+
+    private void checkMediaPermission() {
+        if (ContextCompat.checkSelfPermission(SendDataChildActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(SendDataChildActivity.this, new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE}, MY_MEDIA_PICTURE_CODE);
+            return;
+        }
+        images = ImagesGallery.listOfImage(getApplicationContext());
+        videoArrayList = VideosGallery.lisOfVideo(getApplicationContext());
+    }
+
 
     private void checkMapPermission() {
         if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -314,7 +267,8 @@ public class SendDataChildActivity extends AppCompatActivity {
         if (requestCode == PERMS_CONTACT_ID) {
             checkContactPermissions();
         }
-        if (requestCode == MY_READ_PERMISSION_CODE) {
+        if (requestCode == MY_MEDIA_PICTURE_CODE) {
+            checkMediaPermission();
         }
 
         if (requestCode == REQUEST_PHONE_CALL) {
@@ -323,10 +277,12 @@ public class SendDataChildActivity extends AppCompatActivity {
         if (requestCode == PERMS_MAP_ID) {
             checkMapPermission();
         }
+
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void checkCallLogPermissions(String phoneNumber) {
+    private void checkCallLogPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             {
                 Log.i(TAG, "Contacts permission NOT granted");
@@ -335,7 +291,7 @@ public class SendDataChildActivity extends AppCompatActivity {
             }
 
         }
-        getCallDetails(phoneNumber);
+
     }
 
 
