@@ -94,13 +94,13 @@ public class Connection {
         Child child;
         Contact contact;
         String text;
-        String date;
+        Long date;
         boolean sended;
 
         public SMS() {
         }
 
-        public SMS(int id, Child child, Contact contact, String text, String date, boolean sended) {
+        public SMS(int id, Child child, Contact contact, String text, Long date, boolean sended) {
             this.id = id;
             this.child = child;
             this.contact = contact;
@@ -113,7 +113,7 @@ public class Connection {
         public Child getChild() { return child; }
         public Contact getContact() {return contact;}
         public String getText() {return text;}
-        public String getDate() {return date;}
+        public Long getDate() {return date;}
         public boolean isSended() {return sended;}
     }
 
@@ -124,8 +124,8 @@ public class Connection {
         public Contact getContact () {return contact;}
         Child child;
         public Child getChild () {return child;}
-        String date;
-        public String getDate () {return date;}
+        Long date;
+        public Long getDate () {return date;}
         int type;
         public int getType () {return type;}
         String duration;
@@ -300,7 +300,7 @@ public class Connection {
                             JSONObject jo = jsonArray.getJSONObject(i);
                             s.contact = contact;
                             s.child = child;
-                            s.date = jo.getString("date_time");
+                            s.date = jo.getLong("date_time");
                             s.text = jo.getString("text_value");
                             s.id = jo.getInt("id");
                             s.sended = jo.getString("type_value").equals("sender");
@@ -347,7 +347,7 @@ public class Connection {
                             cd.id = jo.getInt("id");
                             cd.contact = contact;
                             cd.child = child;
-                            cd.date = jo.getString("date_time");
+                            cd.date = jo.getLong("date_time");
                             cd.duration = jo.getString("duration");
                             String type = jo.getString("type_value");
                             switch (type) {
