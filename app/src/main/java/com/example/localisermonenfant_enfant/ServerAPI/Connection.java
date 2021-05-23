@@ -427,7 +427,7 @@ public class Connection {
         try {
             JSONObject params = new JSONObject();
             params.put("sid", sid);
-            params.put("type", "AddSMS");
+            params.put("type", "AddCalls");
             JSONArray array = new JSONArray();
             for (CallData call : callDataList) {
                 JSONObject c = new JSONObject();
