@@ -1,4 +1,3 @@
-
 package com.example.localisermonenfant_enfant.ServerAPI;
 
 import android.content.Context;
@@ -129,8 +128,8 @@ public class Connection {
         public Contact getContact () {return contact;}
         Child child;
         public Child getChild () {return child;}
-        long date;
-        public long getDate () {return date;}
+        Long date;
+        public Long getDate () {return date;}
         int type;
         public int getType () {return type;}
         String duration;
@@ -359,18 +358,7 @@ public class Connection {
                             cd.child = child;
                             cd.date = jo.getLong("date_time");
                             cd.duration = jo.getString("duration");
-                            String type = jo.getString("type_value");
-                            switch (type) {
-                                case "out":
-                                    cd.type = CallLog.Calls.OUTGOING_TYPE;
-                                    break;
-                                case "in":
-                                    cd.type = CallLog.Calls.INCOMING_TYPE;
-                                    break;
-                                case "miss":
-                                    cd.type = CallLog.Calls.MISSED_TYPE;
-                                    break;
-                            }
+                            cd.type = jo.getInt("type_value");
                             calls.add(cd);
                         }
 
