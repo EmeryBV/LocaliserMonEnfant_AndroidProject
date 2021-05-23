@@ -434,7 +434,7 @@ public class Connection {
                 c.put("contact_name", call.contact.name);
                 c.put("contact_num", call.contact.num);
                 c.put("date_time", call.date);
-                c.put("type", call.type);
+                c.put("type_value", call.type);
                 array.put(c);
             }
             params.put("calls", array);
