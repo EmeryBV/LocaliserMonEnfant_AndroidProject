@@ -419,6 +419,41 @@ public class Connection {
         }
     }
 
+    public interface SendCallDataCallback {
+        public void OnSuccess();
+        public void OnError();
+    }
+    public void SendCallData (Context context, ArrayList<CallData> callDataList, final SendCallDataCallback sendCallDataCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("sid", sid);
+            params.put("type", "AddSMS");
+            JSONArray array = new JSONArray();
+            for (CallData call : callDataList) {
+                JSONObject c = new JSONObject();
+                c.put("contact_name", call.contact.name);
+                c.put("contact_num", call.contact.num);
+                c.put("date_time", call.date);
+                c.put("type", call.type);
+                array.put(c);
+            }
+            params.put("calls", array);
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    sendCallDataCallback.OnSuccess();
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    sendCallDataCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            sendCallDataCallback.OnError();
+        }
+    }
+
     public interface GetGPSCallback {
         public void OnSuccess(double lat, double lon);
         public void OnError();
