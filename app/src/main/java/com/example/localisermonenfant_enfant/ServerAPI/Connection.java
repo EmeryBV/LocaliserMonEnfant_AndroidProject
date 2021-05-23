@@ -110,26 +110,11 @@ public class Connection {
         }
 
         public int getID() {return id;}
-
-        public Child getChild() {
-            return child;
-        }
-
-        public Contact getContact() {
-            return contact;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public String getDate() {
-            return date;
-        }
-
-        public boolean isSended() {
-            return sended;
-        }
+        public Child getChild() { return child; }
+        public Contact getContact() {return contact;}
+        public String getText() {return text;}
+        public String getDate() {return date;}
+        public boolean isSended() {return sended;}
     }
 
     public class CallData {
@@ -743,6 +728,43 @@ public class Connection {
             });
         } catch (JSONException e) {
             getVideosCallback.OnError();
+        }
+    }
+
+    public interface SignUpCallback {
+        public void OnSuccess();
+        public void OnError();
+    }
+    public void SignUp (Context context, String email, String username, String pass, boolean isChild, final SignUpCallback signUpCallback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("type", "SignUp");
+            params.put("email", email);
+            params.put("username", username);
+            params.put("pass", pass);
+            params.put("isChild", isChild);
+
+            Post(context, CommandURL, params, new VolleyCallback() {
+                @Override
+                public void OnSuccess(JSONObject response) {
+                    try {
+                        if (response.getBoolean("return")) {
+                            signUpCallback.OnSuccess();
+                        } else {
+                            signUpCallback.OnError();
+                        }
+                    } catch (JSONException e) {
+                        signUpCallback.OnError();
+                    }
+                }
+
+                @Override
+                public void OnError(VolleyError error) {
+                    signUpCallback.OnError();
+                }
+            });
+        } catch (JSONException e) {
+            signUpCallback.OnError();
         }
     }
 
