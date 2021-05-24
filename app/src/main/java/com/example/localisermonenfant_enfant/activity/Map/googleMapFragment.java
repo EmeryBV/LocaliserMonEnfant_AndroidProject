@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.example.localisermonenfant_enfant.R;
 import com.example.localisermonenfant_enfant.ServerAPI.Connection;
+import com.example.localisermonenfant_enfant.Service.SendDataService;
 import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
 import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 import com.example.localisermonenfant_enfant.activity.MainMenu.SettingsActivity;
@@ -68,11 +69,11 @@ public class googleMapFragment extends Fragment implements LocationListener {
     public static final int PERMS_MAP_ID = 1234;
     private LocationManager lm;
     private SupportMapFragment mapFragment;
-    private GoogleMap googleMap;
-    private Marker positionChild;
-    private double lo = 0;
-    private double la = 0;
-    private LatLng lastPosition;
+    public static GoogleMap googleMap;
+    public static  Marker positionChild;
+    public static double lo = 0;
+    public static double la = 0;
+    public static LatLng lastPosition;
 
     public googleMapFragment() {
         // Required empty public constructor
@@ -106,15 +107,14 @@ public class googleMapFragment extends Fragment implements LocationListener {
                     SendDataChildActivity.hashMap.put(MainMenu.child.getId(), latLngs);
                     lastPosition = latLng;
                 }
-
             }
-
 
             @Override
             public void OnError() {
 
             }
         });
+
 
     }
 
@@ -185,25 +185,13 @@ public class googleMapFragment extends Fragment implements LocationListener {
             public void onMapReady(final GoogleMap googleMap) {
                 googleMapFragment.this.googleMap = googleMap;
 
+
                 googleMap.setMyLocationEnabled(true);
                 MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(la, lo)).title(MainMenu.child.getName());
-                googleMap.addMarker(markerOptions);
-
                 positionChild = googleMap.addMarker(markerOptions);
-                LatLng googleLocation = new LatLng(la, lo);
+
                 googleMap.moveCamera(CameraUpdateFactory.zoomBy(30));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(googleLocation));
-                Polyline Polyline = null;
-                PolylineOptions path = new PolylineOptions().clickable(true);
-                for (LatLng coord : SendDataChildActivity.hashMap.get(MainMenu.child.getId())) {
-                    path.add(coord);
-
-
-                    Polyline = googleMap.addPolyline(path);
-                }
-
-
-                Polyline.setColor(0x7FFF2B00);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(positionChild.getPosition()));
 
                 for (areaMap areaMap : MapActivity.areaList) {
                     PolygonOptions polygonOptions = new PolygonOptions().clickable(true);
@@ -222,7 +210,7 @@ public class googleMapFragment extends Fragment implements LocationListener {
                     Time limitTimeStart = new Time(areaMap.getHoursStart(), areaMap.getMinuteStart(), 00);
                     Time limitTimeEnd = new Time(areaMap.getHoursEnd(), areaMap.getMinutesEnd(), 00);
                     if (notificationType.equals("Pop up")) {
-                    if ((areaMap.getColor() == 0x7FFF7F00 || areaMap.getColor() == 0x7FFF2B00) && contains && limitTimeStart.before(currentTime) && limitTimeEnd.after(currentTime)) {
+                        if ((areaMap.getColor() == 0x7FFF7F00 || areaMap.getColor() == 0x7FFF2B00) && contains && limitTimeStart.before(currentTime) && limitTimeEnd.after(currentTime)) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                             builder.setCancelable(true);
                             builder.setTitle("Alerte");
@@ -265,26 +253,6 @@ public class googleMapFragment extends Fragment implements LocationListener {
                             dialog.show();
                         }
                     }
-                    else if (notificationType.equals("Vibration")) {
-                            Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                            } else {
-                                v.vibrate(500);
-                            }
-                        } else {
-
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "Channel ID")
-                                    .setSmallIcon(R.drawable.ic_baseline_warning_24)
-                                    .setContentTitle("Alerte")
-                                    .setContentText(MainMenu.child.getName() + " is in a bad place")
-                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                                    .setAutoCancel(true);
-                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
-                            notificationManager.notify(10, builder.build());
-                        }
-
-
                 }
 
 
@@ -335,15 +303,7 @@ public class googleMapFragment extends Fragment implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
 
-//        Toast.makeText(getContext(), " Location " + latitude + "/" + longitude,Toast.LENGTH_LONG).show();
-        if (googleMap != null && !Log_in.c.GetConnectionType().toString().equals("Parent")) {
-            LatLng googleLocation = new LatLng(latitude, longitude);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(googleLocation));
-
-        }
     }
 
 

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.localisermonenfant_enfant.R;
+import com.example.localisermonenfant_enfant.ServerAPI.Connection;
 import com.example.localisermonenfant_enfant.activity.ChoiceChild.ChoiceChildActivity;
 import com.example.localisermonenfant_enfant.activity.MainMenu.MainMenu;
 import com.example.localisermonenfant_enfant.activity.SendDataChild.SendDataChildActivity;
@@ -55,9 +57,33 @@ public class Sign_in extends AppCompatActivity {
 
 
                     if(radioButton.getText().toString().equals(getString(R.string.Parent))){
-                         intent = new Intent(getApplication(), ChoiceChildActivity.class);
-                    }else  intent = new Intent(getApplication(), SendDataChildActivity.class);
+                        Connection.SignUp(getApplicationContext(), pseudo.getText().toString(), pseudo.getText().toString(), password.getText().toString(), false, new Connection.SignUpCallback() {
+                            @Override
+                            public void OnSuccess() {
+                                Log.e("Debug", "Envoie du parent reussi");
+                            }
 
+                            @Override
+                            public void OnError() {
+                                Log.e("Debug", "Erreur lors de l'inscription du parent  ");
+                            }
+                        });
+
+                    }else{
+                        Connection.SignUp(getApplicationContext(), pseudo.getText().toString(), pseudo.getText().toString(), password.getText().toString(), true, new Connection.SignUpCallback() {
+                                    @Override
+                                    public void OnSuccess() {
+                                        Log.e("Debug", "Envoie de l'enfant reussi ");
+                                    }
+
+                                    @Override
+                                    public void OnError() {
+                                        Log.e("Debug", "Erreur lors de l'inscription de l'enfant  ");
+                                    }
+                                });
+
+                    }
+                    intent = new Intent(getApplication(), Log_in.class);
                     startActivity(intent);
                 }
 

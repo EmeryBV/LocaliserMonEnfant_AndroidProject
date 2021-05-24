@@ -14,6 +14,7 @@ import com.example.localisermonenfant_enfant.ServerAPI.Connection;
 import com.example.localisermonenfant_enfant.activity.Authentification.Log_in;
 import com.example.localisermonenfant_enfant.activity.Contacts.ContactsActivity;
 import com.example.localisermonenfant_enfant.activity.Listen.ListenActivity;
+import com.example.localisermonenfant_enfant.activity.Map.LocalisationChild;
 import com.example.localisermonenfant_enfant.activity.Map.MapActivity;
 import com.example.localisermonenfant_enfant.activity.Media.MediaActivity;
 import com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity;
@@ -40,6 +41,8 @@ import java.util.ArrayList;
         setContentView(R.layout.activity_main_menu);
         Button media_button = findViewById(R.id.medias);
 
+        Intent intent2 = new Intent(this, LocalisationChild.class);
+        startService(intent2);
 
         media_button.setOnClickListener(new View.OnClickListener() {
             @Override

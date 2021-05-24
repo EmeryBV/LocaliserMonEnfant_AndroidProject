@@ -72,8 +72,7 @@ public class CallLogActivity extends AppCompatActivity {
 
 
                     int dircode = connectionCallLog.getType();
-                    Log.e("Dircode", String.valueOf(dircode));
-                    String dir = "test";
+                    String dir = "";
                     switch (dircode) {
                         case 2:
                             dir = getString(R.string.OutGoing);

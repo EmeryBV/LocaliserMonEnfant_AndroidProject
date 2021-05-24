@@ -6,15 +6,15 @@ import java.util.ArrayList;
 
 public class areaMap {
 
-    private int color = 0x7F00FF00;
+    private static int color = 0x7F00FF00;
 
-    private int hoursStart;
-    private int minuteStart;
+    private static int hoursStart;
+    private static int minuteStart;
 
-    private int hoursEnd;
-    private int minutesEnd;
+    private static int hoursEnd;
+    private static int minutesEnd;
 
-   private ArrayList<LatLng> latLng = new ArrayList<>();
+   private static ArrayList<LatLng> latLng = new ArrayList<>();
 
     public areaMap() {
     }
@@ -30,7 +30,7 @@ public class areaMap {
 
 
 
-    public int getColor() {
+    public static int getColor() {
         return color;
     }
 
@@ -38,7 +38,7 @@ public class areaMap {
         this.color = color;
     }
 
-    public int getHoursStart() {
+    public static int getHoursStart() {
         return hoursStart;
     }
 
@@ -46,7 +46,7 @@ public class areaMap {
         this.hoursStart = hoursStart;
     }
 
-    public int getMinuteStart() {
+    public static int getMinuteStart() {
         return minuteStart;
     }
 
@@ -54,7 +54,7 @@ public class areaMap {
         this.minuteStart = minuteStart;
     }
 
-    public int getHoursEnd() {
+    public static int getHoursEnd() {
         return hoursEnd;
     }
 
@@ -62,7 +62,7 @@ public class areaMap {
         this.hoursEnd = hoursEnd;
     }
 
-    public int getMinutesEnd() {
+    public static int getMinutesEnd() {
         return minutesEnd;
     }
 
@@ -70,7 +70,7 @@ public class areaMap {
         this.minutesEnd = minutesEnd;
     }
 
-    public ArrayList<LatLng> getLatLng() {
+    public static ArrayList<LatLng> getLatLng() {
         return latLng;
     }
 

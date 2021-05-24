@@ -99,43 +99,8 @@ public class SendDataChildActivity extends AppCompatActivity {
 
                     nameParent.setText(parent.getName());
 
-                    checkMapPermission();
-                    checkMediaPermission();
                     checkContactPermissions();
-                    checkSMSPermissions();
-                    checkCallLogPermissions();
 
-
-//                    checkMapPermission();
-//                    if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-//                            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(),
-//                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                        return;
-//                    }
-//                    fusedLocationClient.getLastLocation()
-//                            .addOnSuccessListener(SendDataChildActivity.this, new OnSuccessListener<Location>() {
-//                                @Override
-//                                public void onSuccess(Location location) {
-//                                    if (location != null) {
-//                                        Log_in.c.SetGPS(getApplicationContext(), location.getLongitude(), location.getLatitude(), new Connection.SetGPSCallback() {
-//                                            @Override
-//                                            public void OnSuccess() {
-//                                                Log.e("Debug", "Position de l'enfant envoyé : ");
-//                                            }
-//
-//                                            @Override
-//                                            public void OnError() {
-//                                                Log.e("Erreur", "Erreur lors de l'envoie de la postion de l'enfant : ");
-//                                            }
-//                                        });
-//                                    }
-//                                }
-//                            });
-
-
-
-                    Intent intent = new Intent(SendDataChildActivity.this, SendDataService.class);
-                    startService(intent);
                     linearLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -215,16 +180,19 @@ public class SendDataChildActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void checkSMSPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED)
             {
-                Log.i(TAG, "Contacts permission NOT granted");
+                Log.i(TAG, "SMS permission NOT granted");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_SMS}, REQUEST_PHONE_CALL);
                 return;
             }
-        }
+        Log.i(TAG, "Je suis la ");
+            checkMapPermission();
+
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void checkContactPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 
@@ -235,8 +203,11 @@ public class SendDataChildActivity extends AppCompatActivity {
                 return;
         }
         getContactList();
+        checkMediaPermission();
+
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void checkMediaPermission() {
         if (ContextCompat.checkSelfPermission(SendDataChildActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(SendDataChildActivity.this, new String[]{
@@ -245,18 +216,22 @@ public class SendDataChildActivity extends AppCompatActivity {
         }
         images = ImagesGallery.listOfImage(getApplicationContext());
         videoArrayList = VideosGallery.lisOfVideo(getApplicationContext());
+        checkSMSPermissions();
+
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void checkMapPermission() {
-        if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION
             }, PERMS_MAP_ID);
             return;
         }
+        Intent intent = new Intent(SendDataChildActivity.this, SendDataService.class);
+        startService(intent);
+        checkCallLogPermissions();
     }
 
 
@@ -267,17 +242,19 @@ public class SendDataChildActivity extends AppCompatActivity {
         if (requestCode == PERMS_CONTACT_ID) {
             checkContactPermissions();
         }
-        if (requestCode == MY_MEDIA_PICTURE_CODE) {
+        else if (requestCode == MY_MEDIA_PICTURE_CODE) {
             checkMediaPermission();
         }
 
-        if (requestCode == REQUEST_PHONE_CALL) {
+        else if (requestCode == REQUEST_PHONE_CALL) {
             checkSMSPermissions();
         }
-        if (requestCode == PERMS_MAP_ID) {
+        else if (requestCode == PERMS_MAP_ID) {
             checkMapPermission();
         }
-
+        else if (requestCode ==MY_READ_PERMISSION_CODE ){
+            checkCallLogPermissions();
+        }
     }
 
 

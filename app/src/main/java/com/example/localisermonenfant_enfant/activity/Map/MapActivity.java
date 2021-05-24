@@ -91,7 +91,7 @@ public class MapActivity extends AppCompatActivity {
                     areaList.get(areaList.size()-1).setMinuteStart(minuteStart);
                     areaList.get(areaList.size()-1).setHoursEnd(hoursEnd);
                     areaList.get(areaList.size()-1).setMinutesEnd(minutesEnd);
-
+                    Toast.makeText(getApplicationContext(), "Merci de cliquer sur la map pour appliquer les zones ", Toast.LENGTH_LONG).show();
                 }
 
 

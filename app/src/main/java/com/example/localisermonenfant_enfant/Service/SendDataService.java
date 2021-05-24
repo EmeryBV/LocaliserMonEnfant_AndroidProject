@@ -1,6 +1,7 @@
 package com.example.localisermonenfant_enfant.Service;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.CallLog;
 import android.telecom.Call;
@@ -35,18 +37,25 @@ import com.example.localisermonenfant_enfant.activity.SendDataChild.SendDataChil
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
 import static com.example.localisermonenfant_enfant.activity.Contacts.SMS.SmsActivity.getAllSms;
 import static com.example.localisermonenfant_enfant.activity.SendDataChild.SendDataChildActivity.contactsArrayList;
+import static java.lang.Thread.sleep;
 
 public class SendDataService extends Service {
     private FusedLocationProviderClient fusedLocationClient;
     NotificationManagerCompat notificationManager;
     final int KEEPUS_NOTIFICATION_ID = 1;
     private FusedLocationProviderClient FusedLocationClient;
+    private LocationManager mLocationManager = null;
+    private static final int LOCATION_INTERVAL = 1000;
+    private static final float LOCATION_DISTANCE = 10f;
     private Long dateLastUpdate = (long) 0;
+    private static final String TAG = "TAG";
+    public static Location location = null;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -71,36 +80,84 @@ public class SendDataService extends Service {
         notificationManager.notify(10, builder.build());
 
         FusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        initializeLocationManager();
 
-        Log.e("Debug", "Je suis la ");
-//        Log_in.c.SendImages(getApplicationContext(), SendDataChildActivity.images, new Connection.SendImagesCallback() {
-//            @Override
-//            public void OnSuccess() {
-//                Log.e("Debug", "Image envoyé !  ");
-//            }
-//
-//            @Override
-//            public void OnError() {
-//                Log.e("Debug", "Erreur lors de l'envoies des images: ");
-//            }
-//        });
-//
-//        Log_in.c.SendVideos(getApplicationContext(), SendDataChildActivity.videoArrayList, new Connection.SendVideosCallback() {
-//            @Override
-//            public void OnSuccess() {
-//                Log.e("Debug", "Vidéo envoyé !  ");
-//            }
-//
-//            @Override
-//            public void OnError() {
-//                Log.e("Debug", "Erreur lors de l'envoies des images: ");
-//            }
-//        });
+//        while (true) {
+            try {
+                mLocationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                        mLocationListeners[1]);
+
+
+            } catch (java.lang.SecurityException ex) {
+                Log.i(TAG, "fail to request location update, ignore", ex);
+            } catch (IllegalArgumentException ex) {
+                Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+            }
+
+            try {
+                mLocationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                        mLocationListeners[0]);
+            } catch (java.lang.SecurityException ex) {
+                Log.i(TAG, "fail to request location update, ignore", ex);
+            } catch (IllegalArgumentException ex) {
+                Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+            }
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+
+
+            double latitude = 0;
+            double longitude = 0;
+            if (location != null) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
+
+
+        if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+
+        Log_in.c.SendImages(getApplicationContext(), SendDataChildActivity.images, new Connection.SendImagesCallback() {
+            @Override
+            public void OnSuccess() {
+                Log.e("Debug", "Image envoyé !  ");
+            }
+
+            @Override
+            public void OnError() {
+                Log.e("Debug", "Erreur lors de l'envoies des images: ");
+            }
+        });
+
+        Log_in.c.SendVideos(getApplicationContext(), SendDataChildActivity.videoArrayList, new Connection.SendVideosCallback() {
+            @Override
+            public void OnSuccess() {
+                Log.e("Debug", "Vidéo envoyé !  ");
+            }
+
+            @Override
+            public void OnError() {
+                Log.e("Debug", "Erreur lors de l'envoies des images: ");
+            }
+        });
+
 
         Log_in.c.GetSMSLastDateCallback(getApplicationContext(), new Connection.GetSMSLastDateCallback() {
             @Override
             public void OnSuccess(Long date) {
+
                 dateLastUpdate = date;
+
             }
 
             @Override
@@ -109,8 +166,7 @@ public class SendDataService extends Service {
             }
         });
         for (Contacts contact : contactsArrayList) {
-
-                    SmsActivity.contact = new Connection.Contact(0, contact.getName(), contact.getNumber());
+            SmsActivity.contact = new Connection.Contact(0, contact.getName(), contact.getNumber());
             SmsActivity.getAllSms(getApplicationContext());
             ArrayList<Connection.SMS> smsSend = new ArrayList<>();
             for (Sms sms : SmsActivity.listSms) {
@@ -141,7 +197,7 @@ public class SendDataService extends Service {
                 if(callLog.getDir()!=null&& Long.parseLong(callLog.getCallDayTime())>dateLastUpdate){
                 type = callLog.getDir().equals(getString(R.string.OutGoing))? 2 : callLog.getDir().equals(getString(R.string.Incoming))? 1 : 3;
                 }
-                Log.e("Debuuuuug", callLog.getCallDuration());
+//                Log.e("Debuuuuug", callLog.getCallDuration());
                         Connection.CallData callData = new Connection.CallData(0,contact1, null,Long.parseLong(callLog.getCallDayTime()),type,callLog.getCallDuration());
                 callLogSend.add(callData);
             }
@@ -158,10 +214,7 @@ public class SendDataService extends Service {
                 }
             });
         }
-
-
     }
-
 
     @Override
     public void onDestroy() {
@@ -179,5 +232,65 @@ public class SendDataService extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    private class LocationListener implements android.location.LocationListener {
+        Location mLastLocation;
 
+        public LocationListener(String provider) {
+            Log.e(TAG, "LocationListener " + provider);
+            mLastLocation = new Location(provider);
+
+
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.e(TAG, "onLocationChanged: " + location);
+            mLastLocation.set(location);
+            Log_in.c.SetGPS(getApplicationContext(), location.getLongitude(), location.getLatitude(), new Connection.SetGPSCallback() {
+                @Override
+                public void OnSuccess() {
+                    try {
+                        sleep(5000);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void OnError() {
+                    Log.e("Erreur", "Erreur lors de l'envoie de la postion de l'enfant : ");
+                }
+            });
+
+        }
+
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.e(TAG, "onProviderDisabled: " + provider);
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.e(TAG, "onProviderEnabled: " + provider);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    }
+
+    LocationListener[] mLocationListeners = new LocationListener[]{
+            new LocationListener(LocationManager.GPS_PROVIDER),
+            new LocationListener(LocationManager.NETWORK_PROVIDER)
+    };
+
+    private void initializeLocationManager() {
+        Log.e(TAG, "initializeLocationManager");
+        if (mLocationManager == null) {
+            mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        }
+
+    }
 }
