@@ -1,0 +1,2 @@
+Pour utiliser l'application, il suffit de build le projet sur une machine virtuelle android.
+le serveur est hebergé, un acces a la base de donnée vous est fourni sur la page de garde du rapport
